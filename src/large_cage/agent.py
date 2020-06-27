@@ -21,6 +21,9 @@ GD_INTRODUCTIONS = 6
 GD_TRIGGER_DRIVE = 0.9
 GD_TRIGGER_DAY = 45
 MATING_PROBABILITY = 0.5
+MULTIPLE_MATING_FEMALE = False
+MULTIPLE_MATING_MALE = True
+EGG_DEPOSITION_PROBABILITY = 0.2
 ANTI_DRIVE_MATING_HET = MATING_PROBABILITY
 ANTI_DRIVE_MATING_HOM = MATING_PROBABILITY
 SURVIVAL = stats.weibull_min(c=2.2472084592310644,
@@ -114,13 +117,15 @@ class Individual():
         # egg -> larva -> pupa -> adult
         self.stage = 'egg'
 
-        # only one mating per individual allowed
+        # keep track of mating events
         self.mated = False
 
-        # initial mating probability
-        # potentially to be recomputed at each feeding cycle
+        # initial mating probability 
         self.mating = self.get_mating()
 
+        # will deposit eggs?
+        self.deposing_eggs = self._eggs_deposition()
+        
         # egg production
         if self.sex == 'f' and self.genotype1 not in NON_FUNCTIONAL:
             if DRIVE not in self.genotype1:
@@ -252,6 +257,13 @@ class Individual():
             else:
                 return False
 
+    def _eggs_deposition(self):
+        if self.sex == 'm':
+            return None
+        elif random.random() <= EGG_DEPOSITION_PROBABILITY:
+            return True
+        return False
+    
     def change_age(self, time_step):
         self.age += time_step
         if self.stage == 'egg' and self.hatching and self.age >= self.time_to_hatch:
@@ -321,19 +333,45 @@ class Individual():
             return self._mendelian(self.genotype2)
 
 
-def mate(m, f, multiple=True):
+def mate_all(population,
+             multiple_mating_female=MULTIPLE_MATING_FEMALE,
+             multiple_mating_male=MULTIPLE_MATING_MALE):
+    eggs = set()
+    males = [x for x in population
+                if x.sex == 'm'
+                and x.stage == 'adult'
+                and x.mating
+                and ((not multiple_mating_male and not x.mated) or
+                     multiple_mating_male)]
+    females = [x for x in population
+                if x.sex == 'f'
+                and x.stage == 'adult'
+                and x.mating
+                and ((not multiple_mating_female and not x.mated) or
+                     multiple_mating_female)]
+    random.shuffle(males)
+    random.shuffle(females)
+    for m, f in zip(males, females):
+        eggs = eggs.union(mate(m, f))
+    return eggs
+
+def mate(m, f,
+         multiple_mating_female=MULTIPLE_MATING_FEMALE,
+         multiple_mating_male=MULTIPLE_MATING_MALE):
     '''Mate a female with a male, determine the zygotes genotypes'''
     if f.sex == m.sex:
         raise RuntimeError('Cannot mate')
 
     eggs = set()
 
-    if not multiple:
-        m.mated = True
+    if not multiple_mating_female:
         f.mated = True
+    if not multiple_mating_male:
+        m.mated = True
 
     # can they both mate?
-    if not f.mating or not m.mating:
+    # also can the female depose eggs?
+    if not f.mating or not m.mating or not f.deposing_eggs:
         return eggs
 
     # we assume all female gametes become eggs
@@ -362,8 +400,8 @@ def mate(m, f, multiple=True):
                             nucl_from_father, nucl_from_mother))
 
     # regenerate mating probability for next cycle
-    m.mating = m.get_mating()
-    f.mating = f.get_mating()
+    # m.mating = m.get_mating()
+    # f.mating = f.get_mating()
 
     return eggs
 
@@ -480,6 +518,8 @@ def run_simulation(start_populations, wt_populations=None,
     wt_triggered = False
 
     latest_eggs = set()
+    # eggs are harvested in the next feeding cycle
+    previous_eggs = set()
 
     population = start_populations.pop()
 
@@ -510,42 +550,45 @@ def run_simulation(start_populations, wt_populations=None,
                 dead.add(e)
         for e in dead:
             eggs_nursery.remove(e)
+        # also in previous egg batch
+        dead = set()
+        for e in previous_eggs:
+            e.change_age(time_step)
+            if not e.is_alive():
+                dead.add(e)
+        for e in dead:
+            previous_eggs.remove(e)
 
         # TODO: move around
 
         # day of the week
         day = round(total_time, 1) % 7
-        # mate adults (if we are after feeding)
+        
         eggs = set()
+
+        #  Select the larvae from previous harvests
         if len(eggs_nursery) > 0:
             larvae = [x for x in eggs_nursery if x.stage == 'larva']
             pupae = [x for x in eggs_nursery if x.stage == 'pupa']
         else:
             larvae = []
             pupae = []
+        
+        # feeding/harvesting/release day
         if day < .09 or 2.91 < day < 3.09: # or 3.91 < day < 4.09:
             # TODO: spatial effects
-            males = [x for x in population
-                        if x.sex == 'm'
-                        and x.stage == 'adult'
-                        and x.mating
-                        and not x.mated]
-            females = [x for x in population
-                        if x.sex == 'f'
-                        and x.stage == 'adult'
-                        and x.mating
-                        and not x.mated]
-            random.shuffle(males)
-            random.shuffle(females)
-            for m, f in zip(males, females):
-                eggs = eggs.union(mate(m, f))
+            
+            # collect the previous round of eggs
+            if len(previous_eggs) > 0:
+                eggs_nursery = eggs_nursery.union(previous_eggs)
+            previous_eggs = set()
+
+            # mate adults (we are after feeding)
+            eggs = mate_all(population)
 
             # save current egg status
             latest_eggs = deepcopy(eggs)
-
-            # put the eggs in the nursery
-            if len(eggs) > 0:
-                eggs_nursery = eggs_nursery.union(eggs)
+            previous_eggs = deepcopy(eggs)
 
             if len(start_populations) > 0 and total_time > 1:
                 initial_population = True
@@ -576,6 +619,7 @@ def run_simulation(start_populations, wt_populations=None,
 
         if ((len(report_times) == 0 and not round(total_time, 2) % 1) or
             round(total_time, 2) in report_times):
+            #print(total_time, len(population), len(latest_eggs), len(eggs_nursery))
             print_status(total_time, population, larvae + pupae,
                          initial_population,
                          wt_population,

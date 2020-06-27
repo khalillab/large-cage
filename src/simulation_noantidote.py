@@ -76,4 +76,7 @@ if __name__ == "__main__":
 
             start_populations.append(population)
         
-        run_simulation(start_populations, repetition=j, report_times=time_points)
+        run_simulation(start_populations,
+                       repetition=j,
+                       report_times=time_points,
+                       release=int(POPULATION / 2))
