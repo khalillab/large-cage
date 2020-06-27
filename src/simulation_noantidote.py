@@ -2,7 +2,7 @@
 
 import argparse
 
-from large_cage.agent import REPETITIONS
+from large_cage import agent
 from large_cage.agent import get_all_genotypes
 from large_cage.agent import Individual
 from large_cage.agent import run_simulation
@@ -15,7 +15,7 @@ def get_options():
 
     parser.add_argument('--repetitions',
                         type=int,
-                        default=REPETITIONS,
+                        default=agent.REPETITIONS,
                         help='Repeated runs (default: %(default)d)')
     parser.add_argument('--pop-size',
                         type=int,
@@ -43,8 +43,8 @@ if __name__ == "__main__":
     options = get_options()
 
     # update parameters
-    REPETITIONS = options.repetitions
-    POPULATION = options.pop_size
+    agent.REPETITIONS = options.repetitions
+    agent.POPULATION = options.pop_size
     DRIVE_1 = options.drive_1
     DRIVE_2 = options.drive_2
     if options.time_points is not None:
@@ -53,7 +53,7 @@ if __name__ == "__main__":
         time_points = None
     
     print_header()
-    for j in range(REPETITIONS):
+    for j in range(agent.REPETITIONS):
         # init
         start_populations = []
         gd_populations = []
@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 x.stage = 'adult'
                 population.add(x)
 
-            for i in range(int(POPULATION / 2)):
+            for i in range(int(agent.POPULATION / 2)):
                 x = Individual('f', ['W', 'W'], ['W', 'W'], 0, 0)
                 x.stage = 'adult'
                 population.add(x)
@@ -79,4 +79,4 @@ if __name__ == "__main__":
         run_simulation(start_populations,
                        repetition=j,
                        report_times=time_points,
-                       release=int(POPULATION / 2))
+                       release=agent.POPULATION)
