@@ -510,7 +510,7 @@ def run_simulation(start_populations, wt_populations=None,
     if report_times is None:
         report_times = []
 
-    total_time = 0
+    total_time = -time_step
 
     eggs_nursery = set()
     eggs_hatched = False
@@ -575,7 +575,7 @@ def run_simulation(start_populations, wt_populations=None,
             pupae = []
         
         # feeding/harvesting/release day
-        if day < .09 or 2.91 < day < 3.09: # or 3.91 < day < 4.09:
+        if 0.91 < day < 1.09 or 3.91 < day < 4.09:
             # TODO: spatial effects
             
             # collect the previous round of eggs
