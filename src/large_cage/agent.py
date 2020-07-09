@@ -125,20 +125,89 @@ PUPAL_M_NUCL_FROM_FATHER = stats.norm(loc=0.0692,
                                       scale=0.0233)
 PUPAL_M_NUCL_FROM_BOTH = stats.norm(loc=0.0796,
                                     scale=0.0182)
+# pupal mortality (females)
 PUPAL_F_WT = stats.norm(loc=0.0918,
                         scale=0.0161)
 PUPAL_F_NUCL_FROM_MOTHER = stats.norm(loc=0.0503,
                                       scale=0.0121)
 PUPAL_F_NUCL_FROM_FATHER = stats.norm(loc=0.0676,
                                       scale=0.0223)
+# is this individual intersex?
+# (means that it does not mate)
+# requires presence of the drive in locus 1
 INTERSEX_NUCL_FROM_FATHER = stats.norm(loc=0.0353,
                                        scale=0.0124)
 INTERSEX_NUCL_FROM_MOTHER = stats.norm(loc=0.0096,
                                        scale=0.0066)
 
 class Individual():
-    def __init__(self, sex, genotype1, genotype2, x, y,
+    '''Individual mosquito model
+
+    Two loci are modelled in this simulation:
+    - locus 1: dsx
+    - locus 2: presence/absence of antidote
+
+    Individuals are in the egg stage upon object creation,
+    and the time to reach each stage is predetermined by drawing
+    random variables from predefined distributions
+    
+    Mating, egg deposition probabilities, number of eggs produced
+    and similar quantities are also drawn from predefined distributions
+
+    Example 1: wild-type male
+    >>> Individual('m', ['W', 'W'], ['W', 'W'])
+    
+    Example 2: het. drive male (nuclease received from father)
+    >>> Individual('m', ['D', 'W'], ['W', 'W'], nucl_from_father=True)
+    
+    Example 3: hom. drive female (nuclease received from both parents)
+    >>> Individual('f', ['D', 'D'], ['W', 'W'],
+                   nucl_from_father=True,
+                   nucl_from_mother=True)
+    
+    Example 4: het. drive/resistant female, het. antidrive (nuclease received from mother)
+    >>> Individual('f', ['D', 'R'], ['A', 'W'],
+                   nucl_from_mother=True)
+
+    Useful methods:
+
+    Increase the age of the individual by 1 day. Change of stage is automatically
+    set by the method (including death)
+    >>> i.change_age(1)
+
+    Is this individual still alive?
+    >>> i.is_alive()
+    False
+
+    Is this individual going to develop into an adult?
+    >>> i.will_develop()
+    True
+
+    Form gamete for locus 1 (dsx)
+    >>> i.form_gamete1()
+    D
+
+    Form gamete for locus 2 (antidote)
+    >>> i.form_gamete2()
+    W
+    '''
+    def __init__(self, sex, genotype1, genotype2,
                  nucl_from_father=False, nucl_from_mother=False):
+        '''Create a new individual for the simulation
+        Starts from the egg stage
+
+        Args:
+            sex (str)
+                Sex: one of ['f', 'm']
+            genotype1 (iterable)
+                All unique alleles at the dsx locus
+            genotype2 (iterable)
+                All unique alleles at the antidote locus
+            nucl_from_father (bool)
+                Wether the father passes the nuclease to the egg
+            nucl_from_mother (bool)
+                Wether the mother passes the nuclease to the egg
+        '''
         self.sex = sex
         self.nucl_from_father = nucl_from_father
         self.nucl_from_mother = nucl_from_mother
@@ -256,11 +325,21 @@ class Individual():
         else:
             self.pupa = True
 
-        # position
-        self.x = x
-        self.y = y
-
     def get_genotype(self):
+        '''Get the full genotype at both loci
+
+        Returns
+           genotype (str)
+               The first two chars are the dsx locus, the last the antidote
+
+        Examples
+        >>> i.get_genotype() # wild-type
+        WWWW
+        >>> i.get_genotype() # hom. drive, het. antidote
+        DDAW
+        >>> i.get_genotype() # het. drive, hom. antidote
+        DWAA
+        '''
         gt = ''
         for genotype in (self.genotype1, self.genotype2):
             if len(genotype) == 1:
@@ -293,6 +372,14 @@ class Individual():
             return MATING_PROBABILITY
 
     def get_mating(self):
+        '''Generate the probability that this individual will mate
+        
+        Returns
+            mating (bool)
+               Wether the individual will mate
+
+        The decision is based on sex, genotype and intersex phenotype
+        '''
         if self._is_intersex():
             return False
         if self.sex == 'm':
@@ -314,6 +401,14 @@ class Individual():
         return False
     
     def change_age(self, time_step):
+        '''Increase the age of the individual
+
+        As a result it may change its stage (i.e. egg -> larva)
+
+        Args:
+            time_step (float)
+                Increase in age, in days
+        '''
         self.age += time_step
         if self.stage == 'egg' and self.hatching and self.age >= self.time_to_hatch:
             self.stage = 'larva'
@@ -324,6 +419,12 @@ class Individual():
             self.stage = 'adult'
 
     def will_develop(self):
+        '''Will this individual develop into an adult?
+        
+        Returns:
+           will_develop (bool)
+               Wether the individual will eventually develop into an adult
+        '''
         if self.stage == 'egg' and not self.hatching:
             return False
         elif self.stage == 'larva' and not self.larva:
@@ -332,6 +433,14 @@ class Individual():
             return True
 
     def is_alive(self):
+        '''Is this individual still alive?
+
+        Based on age, stage and development probabilities
+        
+        Returns:
+           is_alive (bool)
+               Wether the individual is still alive
+        '''
         if self.stage == 'adult' and self.age > self.death:
             return False
         elif self.stage == 'egg' and not self.hatching:
@@ -350,6 +459,19 @@ class Individual():
             return sorted(genotype)[1]
 
     def form_gamete1(self, ):
+        '''Form a gamete for locus 1 (dsx)
+        
+        If het. DRIVE homing may happen;
+        the genotype at locus 2 may block homing
+
+        Returns:
+            genotype (str)
+                Genotype at locus 1 for this gamete
+
+        Example:
+        >>> i.form_gamete1()
+        W
+        '''
         if self.hom1:
             return tuple(self.genotype1)[0]
         if DRIVE not in self.genotype1:
@@ -373,9 +495,20 @@ class Individual():
             # TODO: could have functional resistance here too?
             if random.random() < RESISTANCE_EFFICIENCY[self.sex]:
                 return RESISTANCE
+            # regular mendelian inheritance
             return self._mendelian(self.genotype1)
 
     def form_gamete2(self):
+        '''Form a gamete for locus 2 (antidote)
+        
+        Returns:
+            genotype (str)
+                Genotype at locus 2 for this gamete
+
+        Example:
+        >>> i.form_gamete2()
+        A
+        '''
         if self.hom2:
             return tuple(self.genotype2)[0]
         else:
@@ -385,6 +518,20 @@ class Individual():
 def mate_all(population,
              multiple_mating_female=MULTIPLE_MATING_FEMALE,
              multiple_mating_male=MULTIPLE_MATING_MALE):
+    '''Randomly mate all adults that can mate
+
+    Args:
+        population (iterable)
+            All individuals in the population
+        multiple_mating_female (bool)
+            Wether females can mate multiple times in their lifetime
+        multiple_mating_male (bool)
+            Wether males can mate multiple times in their lifetime
+
+    Returns:
+        eggs (set)
+            An iterable of offsprings (Individual objects)
+    '''
     eggs = set()
     males = [x for x in population
                 if x.sex == 'm'
@@ -404,10 +551,26 @@ def mate_all(population,
         eggs = eggs.union(mate(m, f))
     return eggs
 
+
 def mate(m, f,
          multiple_mating_female=MULTIPLE_MATING_FEMALE,
          multiple_mating_male=MULTIPLE_MATING_MALE):
-    '''Mate a female with a male, determine the zygotes genotypes'''
+    '''Mate a female with a male, if conditions are right
+    
+    Args:
+        m (Individual)
+            A male
+        f (Individual)
+            A female
+        multiple_mating_female (bool)
+            Wether females can mate multiple times in their lifetime
+        multiple_mating_male (bool)
+            Wether males can mate multiple times in their lifetime
+
+    Returns:
+        eggs (set)
+            An iterable of offsprings (Individual objects)
+    '''
     if f.sex == m.sex:
         raise RuntimeError('Cannot mate')
 
@@ -456,6 +619,9 @@ def mate(m, f,
 
 
 def get_all_genotypes():
+    '''A generator of all possible genotypes
+    
+    Useful for output generation'''
     g1 = {DRIVE, RESISTANCE, WILD_TYPE}
     g2 = {ANTI_DRIVE, WILD_TYPE}
     gt1 = set()
@@ -470,7 +636,8 @@ def get_all_genotypes():
 
 
 def print_header():
-    print('\t'.join(['round', 'time', 'initial_release', 'wt_release',
+    '''Print to stdout the header for the simulation output'''
+    print('\t'.join(['round', 'time', 'initial_release',
                      'pop', 'fpop', 'eggs', 'feggs', 'output', 'foutput',
                      'fitness'] +
                     ['WT', 'transgenes', 'drives', 'anti', 'resistance'] +
@@ -485,11 +652,27 @@ def print_header():
 
 def print_status(time, population, output,
                  initial_population,
-                 wt_population, eggs, repetition):
+                 eggs, repetition):
+    '''Print information about the genotype frequencies to stdout
+    
+    Args:
+        time (float)
+            Simulation time, in days
+        population (iterable)
+            All individuals in the population
+        output (iterable)
+            All larvae + pupae currently available
+        initial_population (bool)
+            Wether we are introducing the start population
+        eggs (iterable)
+            All eggs produced at this time point
+        repetition (int)
+            Round of simulation
+    '''
     fpop = [x for x in population if x.sex == 'f']
     pop = len(population)
     results = [repetition, time, initial_population,
-               wt_population, len(population), len(fpop),
+               len(population), len(fpop),
                len(eggs), len([x for x in eggs if x.sex == 'f']),
                len(output), len([x for x in output if x.sex == 'f'])]
     if pop != 0:
@@ -550,12 +733,34 @@ def print_status(time, population, output,
     print('\t'.join([str(x) for x in results]))
 
 
-def run_simulation(start_populations, wt_populations=None,
-                   repetition=0, end_time=365, end_drive=1.1,
-                   time_step=TIME_STEP, release=SUBSEQUENT_POPULATION,
-                   report_times=None):
-    if wt_populations is None:
-        wt_populations = []
+def run_simulation(start_populations,
+                   repetition=0, end_time=365,
+                   time_step=TIME_STEP, release=POPULATION,
+                   report_times=None, release_days=RELEASE_DAYS):
+    '''Run a full large-cage simulation given a series of start populations
+    
+    Args:
+        start_populations (iterable of iterables)
+            An iterable of default populations to introduce
+            first, alongside the offspring of the whole cage.
+            The first element of the iterable is the content of
+            the large cage at time point zero.
+        repetition (int)
+            Round of simulation (useful for reporting)
+        end_time (float)
+            Maximum length of the simulation (days)
+        time_step (float)
+            Increase in time each time the simulation moves forward
+            NOTE: A time step larger than 0.1 may cause unforeseen bugs
+        release (int)
+            Maximum number of pupae released on release days
+        report_times (iterable of int)
+            Days for which to report genotype frequencies; by default
+            it is done every day
+        release_days (iterable of int)
+            Days of the week for releases and blood meals. Zero corresponds
+            to Monday, six to Sunday
+    '''
     if report_times is None:
         report_times = []
 
