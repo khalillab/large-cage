@@ -15,6 +15,12 @@ def get_options():
     description = 'Run an individual-based simulation'
     parser = argparse.ArgumentParser(description=description)
 
+    parser.add_argument('--override-parameters',
+                        default=False,
+                        action='store_true',
+                        help='Override parameters using the ones found in '
+                             'the parameters.py file that is in the same '
+                             'directory as this script (default: use default ones)')
     parser.add_argument('--repetitions',
                         type=int,
                         default=agent.REPETITIONS,
@@ -45,8 +51,27 @@ def get_options():
 if __name__ == "__main__":
     options = get_options()
 
+    # should we override the parameters?
+    if options.override_parameters:
+        try:
+            import parameters
+        except ImportError:
+            sys.stderr.write('The parameters.py file should be in the same '
+                             'directory as this script in order to override '
+                             'default parameters\n')
+            sys.exit(1)
+        for var in dir(parameters):
+            if var.startswith('_'):
+                continue
+            sys.stderr.write(f'Changing parameter {var} from its default\n')
+            setattr(agent, var, getattr(parameters, var))
+
     # update parameters
+    sys.stderr.write('Changing parameter REPETITION from its default (using '
+                     'the script arguments)\n')
     agent.REPETITIONS = options.repetitions
+    sys.stderr.write('Changing parameter POPULATION from its default (using '
+                     'the script arguments)\n')
     agent.POPULATION = options.pop_size
     
     # check drive and antidote have the same length

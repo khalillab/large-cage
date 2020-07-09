@@ -26,10 +26,6 @@ HOM_ANTIDRIVE_EFFECT = 0.15
 HET_ANTIDRIVE_EFFECT = 0.3
 # how many introductions of starting population
 INTRODUCTIONS = 6
-# TODO remove
-GD_INTRODUCTIONS = 6
-GD_TRIGGER_DRIVE = 0.9
-GD_TRIGGER_DAY = 45
 # females mating probability
 MATING_PROBABILITY = 0.5
 # can females/males mate multiple times?

@@ -80,3 +80,15 @@ following:
 * DDAA.eggs, DDAW.eggs, DDWW.eggs, DRAA.eggs, DRAW.eggs, DRWW.eggs, DWAA.eggs, DWAW.eggs, DWWW.eggs, RRAA.eggs, RRAW.eggs, RRWW.eggs, RWAA.eggs, RWAW.eggs, RWWW.eggs, WWAA.eggs, WWAW.eggs, WWWW.eggs: same as above but for the eggs produced at this time point
 * WT.output, transgenes.output, drives.output, antidote.output, resistance.output: same as the previous columns, but for the larvae + pupae maturing outside the cage
 * DDAA.output, DDAW.output, DDWW.output, DRAA.output, DRAW.output, DRWW.output, DWAA.output, DWAW.output, DWWW.output, RRAA.output, RRAW.output, RRWW.output, RWAA.output, RWAW.output, RWWW.output, WWAA.output, WWAW.output, WWWW.output: proportion of each individual genotype for the larvae + pupae maturing outside the cage
+
+Changing parameters
+----
+
+The default parameters are defined on top of the `src/large_cage/agent.py` file, and can be overriden in two ways:
+
+* From the script launching the simulation (see the `src/simulation.py` for an example)
+* By changing the `parameters.py` file and using the `--override-parameters` option of the `src/simulation.py` script
+
+It is NOT advisable to change the parameters inside the
+`src/large_cage/agent.py` file manually, unless the changes
+are being committed to version control.
