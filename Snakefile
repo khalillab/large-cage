@@ -30,7 +30,7 @@ rule no_antidote:
           --repetitions {params.repetitions} \
           --time-points {input.time_points} > {output.drive_25}
       python3 src/simulation.py \
-          --drive-1 {params.drive_50_1} {params.drive_50_2} \
+          --drive {params.drive_50_1} {params.drive_50_2} \
           --antidote 0 0 \
           --pop-size {params.pop_size} \
           --repetitions {params.repetitions} \

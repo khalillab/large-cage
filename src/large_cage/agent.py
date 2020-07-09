@@ -673,8 +673,11 @@ def print_status(time, population, output,
                len(eggs), len([x for x in eggs if x.sex == 'f']),
                len(output), len([x for x in output if x.sex == 'f'])]
     if pop != 0:
-        results.append(len([x for x in fpop
-                            if x.mating]) / pop)
+        if len(fpop) == 0:
+            results.append(np.nan)
+        else:
+            results.append(len([x for x in fpop
+                                if x.mating]) / len(fpop))
         results.append(len([x for x in population
                             if x.genotype1 == {WILD_TYPE, }
                             and x.genotype2 == {WILD_TYPE, }]) / pop)
