@@ -224,12 +224,9 @@ class Individual():
         self.genotype2 = set(genotype2)
 
         self.age = 0.
-        # around 2 days to hatch
-        self.time_to_hatch = random.uniform(1.8, 2.2)
-        # around 10 days to pupa
-        self.time_to_pupa = random.uniform(9, 10)
-        # 10-12 days to mature
-        self.time_to_maturation = random.uniform(10, 12)
+        self.time_to_hatch = random.uniform(TIME_TO_HATCH[0], TIME_TO_HATCH[1])
+        self.time_to_pupa = random.uniform(TIME_TO_PUPA[0], TIME_TO_PUPA[1])
+        self.time_to_maturation = random.uniform(TIME_TO_MATURATION[0], TIME_TO_MATURATION[1])
         # lifespan after full maturation
         self.death = SURVIVAL.rvs()
         # egg -> larva -> pupa -> adult
@@ -608,7 +605,7 @@ def mate(m, f,
             sex = 'm'
         else:
             sex = 'f'
-        eggs.add(Individual(sex, (fg1, mg1), (fg2, mg2), 0, 0,
+        eggs.add(Individual(sex, (fg1, mg1), (fg2, mg2),
                             nucl_from_father, nucl_from_mother))
 
     # regenerate mating probability for next cycle
@@ -779,12 +776,6 @@ def run_simulation(start_populations,
 
     while len(population) > 0 and total_time < end_time:
         initial_population = False
-        wt_population = False
-        if len(population) > 0:
-            drive = len([x for x in population
-                         if DRIVE in x.genotype1]) / len(population)
-            if drive >= end_drive:
-                break
         total_time += time_step
         total_time = round(total_time, 1)
 
@@ -813,8 +804,6 @@ def run_simulation(start_populations,
         for e in dead:
             previous_eggs.remove(e)
 
-        # TODO: move around
-
         # day of the week
         day = round(total_time, 1) % 7
         
@@ -829,9 +818,7 @@ def run_simulation(start_populations,
             pupae = []
         
         # feeding/harvesting/release day
-        if 0.91 < day < 1.09 or 3.91 < day < 4.09:
-            # TODO: spatial effects
-            
+        if day % 1 == 0 and int(day) in release_days:
             # collect the previous round of eggs
             if len(previous_eggs) > 0:
                 eggs_nursery = eggs_nursery.union(previous_eggs)
@@ -857,25 +844,9 @@ def run_simulation(start_populations,
                 for p in pupae:
                     eggs_nursery.remove(p)
                 eggs_hatched = True
-            # subsequent introductions
-            # legacy code
-            #if (wt_triggered or 
-            #    total_time > GD_TRIGGER_DAY or
-            #    len([x for x in population
-            #         if x.sex == 'f'
-            #         and DRIVE in x.genotype1]) / len(population) > GD_TRIGGER_DRIVE):
-            #    wt_triggered = True
-            #    if len(wt_populations) > 0:
-            #        wt_population = True
-            #        for indv in wt_populations.pop():
-            #            population.add(indv)
-
 
         if ((len(report_times) == 0 and not round(total_time, 2) % 1) or
             round(total_time, 2) in report_times):
-            #print(total_time, len(population), len(latest_eggs), len(eggs_nursery))
             print_status(total_time, population, larvae + pupae,
                          initial_population,
-                         wt_population,
                          latest_eggs, repetition)
-
