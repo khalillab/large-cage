@@ -11,7 +11,7 @@ Prerequisites
 * scipy
 * snakemake
 
-The necessary packages can installed through `conda`:
+The necessary packages can be installed through `conda`:
 
     conda create -n large-cage numpy scipy snakemake
     conda activate large-cage
@@ -30,13 +30,13 @@ All analysis can be run using `snakemake`:
 where `CPU` is the number of cores used for parallelization.
 
 A script to run a simulation in which drive and antidote heterozygous males
-is provided (`src/simulation.py`), and can be run as follows:
+are introduced is provided (`src/simulation.py`), and can be run as follows:
 
     python3 src/simulation.py --drive 71 72 --antidote 0 0 --pop-size 400 --repetitions 100 --time-points data/reference_time_points.txt
 
-In the above example we are running 100 simulations with an initial releases
+In the above example we are running 100 simulations with an initial release
 of 200 wild-type males, 200 wild-type females and 71 het. drive males. The second
-introdcution is the same as the first one except that 72 het. drive individuals
+introduction is the same as the first one except that 72 het. drive individuals
 are introduced on top of the 400 wild-type ones. The output is computed only
 for those time points present in the `data/reference_time_points.txt` file
 (one line per time point).
