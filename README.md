@@ -16,6 +16,12 @@ The necessary packages can be installed through `conda`:
     conda create -n large-cage numpy scipy snakemake
     conda activate large-cage
 
+A version freeze of the conda environment is also provided in the `conda.yaml`
+file and can be used to install the requirements:
+
+    conda env create --file conda.yaml
+    conda activate large-cage
+
 Or through `pip` using the system's python interpreter:
 
     python3 -m pip install numpy scipy snakemake
