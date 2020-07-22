@@ -40,6 +40,16 @@ def get_options():
                         default=['0', '0'],
                         help='Population sizes for het. male antidotes, initial releases '
                              '(each initial introduction; default: %(default)s)')
+    parser.add_argument('--hom-antidote-effect',
+                        type=float,
+                        default=agent.HOM_ANTIDRIVE_EFFECT,
+                        help='Eggs output reduction for hom. antidotes '
+                             '(default: %(default).2f)')
+    parser.add_argument('--het-antidote-effect',
+                        type=float,
+                        default=agent.HET_ANTIDRIVE_EFFECT,
+                        help='Eggs output reduction for het. antidotes '
+                             '(default: %(default).2f)')
     parser.add_argument('--time-points',
                         default=None,
                         help='Time points for printing simulation status '
@@ -73,7 +83,13 @@ if __name__ == "__main__":
     sys.stderr.write('Changing parameter POPULATION from its default (using '
                      'the script arguments)\n')
     agent.POPULATION = options.pop_size
-    
+    sys.stderr.write('Changing parameter HOM_ANTIDRIVE_EFFECT from its '
+                     'default (using the script arguments)\n')
+    agent.HOM_ANTIDRIVE_EFFECT = options.hom_antidote_effect
+    sys.stderr.write('Changing parameter HET_ANTIDRIVE_EFFECT from its '
+                     'default (using the script arguments)\n')
+    agent.HET_ANTIDRIVE_EFFECT = options.het_antidote_effect
+
     # check drive and antidote have the same length
     if len(options.drive) != len(options.antidote):
         sys.stderr.write('Please provide the same number of introductions '
