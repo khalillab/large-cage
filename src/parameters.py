@@ -10,20 +10,16 @@ from scipy import stats
 # NOTE: if a parameter is removed from this file, the default in
 #       src/large_cage/agent.py will be used
 #
-# population size
-POPULATION = 400
-# proportion of drive/antidrive individuals
-POPULATION_DRIVE = 0.5
-POPULATION_ANTI_DRIVE = 0.0
+# release size
+# (i.e. how many pupae)
+RELEASE = 400
 # how many simulations to run
 REPETITIONS = 100
 # fitness effect of the antidrive (on number of eggs)
 HOM_ANTIDRIVE_EFFECT = 0.15
 HET_ANTIDRIVE_EFFECT = 0.3
-# how many introductions of starting population
-INTRODUCTIONS = 6
 # females mating probability
-MATING_PROBABILITY = 0.5
+MATING_PROBABILITY = 0.6
 # can females/males mate multiple times?
 MULTIPLE_MATING_FEMALE = False
 MULTIPLE_MATING_MALE = True
@@ -31,7 +27,7 @@ MULTIPLE_MATING_MALE = True
 ANTI_DRIVE_MATING_HET = MATING_PROBABILITY
 ANTI_DRIVE_MATING_HOM = MATING_PROBABILITY
 # females eggs deposition probability
-EGG_DEPOSITION_PROBABILITY = 0.2
+EGG_DEPOSITION_PROBABILITY = 0.5
 # lifespan for adults (weibull)
 # a random variable is derived from this distribution
 SURVIVAL = stats.weibull_min(c=2.2472084592310644,
