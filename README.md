@@ -38,7 +38,7 @@ where `CPU` is the number of cores used for parallelization.
 A script to run a simulation in which drive and antidote heterozygous males
 are introduced is provided (`src/simulation.py`), and can be run as follows:
 
-    python3 src/simulation.py --drive 71 72 --antidote 0 0 --pop-size 400 --repetitions 100 --time-points data/reference_time_points.txt
+    python3 src/simulation.py --wild-type 400 400 --drive 71 72 --antidote 0 0 --release 400 --repetitions 100 --time-points data/reference_time_points.txt
 
 In the above example we are running 100 simulations with an initial release
 of 200 wild-type males, 200 wild-type females and 71 het. drive males. The second
@@ -47,16 +47,18 @@ are introduced on top of the 400 wild-type ones. The output is computed only
 for those time points present in the `data/reference_time_points.txt` file
 (one line per time point).
 
-    python3 src/simulation.py --drive 71 72 100 --antidote 0 10 50 --pop-size 500 --repetitions 10 
+    python3 src/simulation.py --wild-type 400 400 400 --drive 71 72 100 --antidote 0 10 50 --release 500 --repetitions 10 
 
 In the second example we are running 10 simulations with three introductions:
-on top of the 500 wild-type individuals we are introducing het. drive males
+on top of the 400 wild-type individuals we are introducing het. drive males
 and het. antidote males, as follows:
 
 * initial population: 71 drives, 0 antidotes
 * first introduction: 72 drives, 10 antidotes
 * second introduction: 100 drives, 50 antidotes
 
+The `--release` option indicates how many pupae are introduced once the eggs produced in the 
+cage are developed.
 Since we didn't provide the `--time-points` argument, the script will report
 output for each day of the simulations.
 
@@ -92,9 +94,11 @@ Changing parameters
 
 The default parameters are defined on top of the `src/large_cage/agent.py` file, and can be overriden in two ways:
 
-* From the script launching the simulation (see the `src/simulation.py` for an example)
+* From the script launching the simulation (see the `src/simulation.py` for an example, only a few parameters)
 * By changing the `parameters.py` file and using the `--override-parameters` option of the `src/simulation.py` script
 
 It is NOT advisable to change the parameters inside the
 `src/large_cage/agent.py` file manually, unless the changes
 are being committed to version control.
+Also note that if the `--override-parameters` option is used, then the parameters written in the `src/parameters.py` file have priority over
+those provided in the command line.
