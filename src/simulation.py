@@ -25,11 +25,17 @@ def get_options():
                         type=int,
                         default=agent.REPETITIONS,
                         help='Repeated runs (default: %(default)d)')
-    parser.add_argument('--pop-size',
+    parser.add_argument('--release-size',
                         type=int,
-                        default=400,
-                        help='Population size for initial release '
-                             '(default: %(default)d)')
+                        default=agent.RELEASE,
+                        help='Release size (how many pupae to release; '
+                             'default: %(default)d)')
+    parser.add_argument('--wild-type',
+                        nargs='+',
+                        default=['400', '400'],
+                        help='Population sizes for wild-type individuals, initial releases '
+                             '(each initial introduction; half are males, half females, '
+                             'default: %(default)s)')
     parser.add_argument('--drive',
                         nargs='+',
                         default=['71', '72'],
@@ -61,6 +67,20 @@ def get_options():
 if __name__ == "__main__":
     options = get_options()
 
+    # update parameters
+    sys.stderr.write('Changing parameter REPETITION from its default (using '
+                     'the script arguments)\n')
+    agent.REPETITIONS = options.repetitions
+    sys.stderr.write('Changing parameter RELEASE from its default (using '
+                     'the script arguments)\n')
+    agent.RELEASE = options.release_size
+    sys.stderr.write('Changing parameter HOM_ANTIDRIVE_EFFECT from its '
+                     'default (using the script arguments)\n')
+    agent.HOM_ANTIDRIVE_EFFECT = options.hom_antidote_effect
+    sys.stderr.write('Changing parameter HET_ANTIDRIVE_EFFECT from its '
+                     'default (using the script arguments)\n')
+    agent.HET_ANTIDRIVE_EFFECT = options.het_antidote_effect
+
     # should we override the parameters?
     if options.override_parameters:
         try:
@@ -76,25 +96,12 @@ if __name__ == "__main__":
             sys.stderr.write(f'Changing parameter {var} from its default\n')
             setattr(agent, var, getattr(parameters, var))
 
-    # update parameters
-    sys.stderr.write('Changing parameter REPETITION from its default (using '
-                     'the script arguments)\n')
-    agent.REPETITIONS = options.repetitions
-    sys.stderr.write('Changing parameter POPULATION from its default (using '
-                     'the script arguments)\n')
-    agent.POPULATION = options.pop_size
-    sys.stderr.write('Changing parameter HOM_ANTIDRIVE_EFFECT from its '
-                     'default (using the script arguments)\n')
-    agent.HOM_ANTIDRIVE_EFFECT = options.hom_antidote_effect
-    sys.stderr.write('Changing parameter HET_ANTIDRIVE_EFFECT from its '
-                     'default (using the script arguments)\n')
-    agent.HET_ANTIDRIVE_EFFECT = options.het_antidote_effect
-
     # check drive and antidote have the same length
-    if len(options.drive) != len(options.antidote):
+    if len(options.wild_type) != len(options.drive) or len(options.drive) != len(options.antidote):
         sys.stderr.write('Please provide the same number of introductions '
-                         'for drive and antidote individuals\n')
+                         'for wild-type, drive and antidote individuals\n')
         sys.exit(1)
+    WILDS = [int(x) for x in options.wild_type]
     DRIVES = [int(x) for x in options.drive]
     ANTIDOTES = [int(x) for x in options.antidote]
     if options.time_points is not None:
@@ -107,7 +114,7 @@ if __name__ == "__main__":
         # init
         start_populations = []
         gd_populations = []
-        for drive, anti in zip(DRIVES, ANTIDOTES):
+        for wild, drive, anti in zip(WILDS, DRIVES, ANTIDOTES):
             population = set()
 
             for i in range(drive):
@@ -123,7 +130,7 @@ if __name__ == "__main__":
                 population.add(x)
 
             # wild-type individuals
-            for i in range(int(agent.POPULATION / 2)):
+            for i in range(int(wild / 2)):
                 x = Individual('f', ['W', 'W'], ['W', 'W'],)
                 x.stage = 'adult'
                 population.add(x)
@@ -136,4 +143,4 @@ if __name__ == "__main__":
         run_simulation(start_populations,
                        repetition=j,
                        report_times=time_points,
-                       release=agent.POPULATION)
+                       release=agent.RELEASE)

@@ -11,23 +11,17 @@ from copy import deepcopy
 # parameters 
 #
 # can be overridden by calling scipts
-# initial population can also be defined by
-# calling scripts
 #
-# population size
-POPULATION = 400
-# proportion of drive/antidrive individuals
-POPULATION_DRIVE = 0.5
-POPULATION_ANTI_DRIVE = 0.0
+# release size
+# (i.e. how many pupae)
+RELEASE = 400
 # how many simulations to run
 REPETITIONS = 100
 # fitness effect of the antidrive (on number of eggs)
 HOM_ANTIDRIVE_EFFECT = 0.15
 HET_ANTIDRIVE_EFFECT = 0.3
-# how many introductions of starting population
-INTRODUCTIONS = 6
 # females mating probability
-MATING_PROBABILITY = 0.5
+MATING_PROBABILITY = 0.6
 # can females/males mate multiple times?
 MULTIPLE_MATING_FEMALE = False
 MULTIPLE_MATING_MALE = True
@@ -35,7 +29,7 @@ MULTIPLE_MATING_MALE = True
 ANTI_DRIVE_MATING_HET = MATING_PROBABILITY
 ANTI_DRIVE_MATING_HOM = MATING_PROBABILITY
 # females eggs deposition probability
-EGG_DEPOSITION_PROBABILITY = 0.2
+EGG_DEPOSITION_PROBABILITY = 0.5
 # lifespan for adults (weibull)
 # a random variable is derived from this distribution
 SURVIVAL = stats.weibull_min(c=2.2472084592310644,
@@ -231,6 +225,9 @@ class Individual():
         # keep track of mating events
         self.mated = False
 
+        # is this individual intersex
+        self.intersex = self._is_intersex()
+        
         # initial mating probability 
         self.mating = self.get_mating()
 
@@ -373,7 +370,7 @@ class Individual():
 
         The decision is based on sex, genotype and intersex phenotype
         '''
-        if self._is_intersex():
+        if self.intersex:
             return False
         if self.sex == 'm':
             return True
@@ -673,7 +670,7 @@ def print_status(time, population, output,
             results.append(np.nan)
         else:
             results.append(len([x for x in fpop
-                                if x.mating]) / len(fpop))
+                                if x.mating and x.deposing_eggs]) / len(fpop))
         results.append(len([x for x in population
                             if x.genotype1 == {WILD_TYPE, }
                             and x.genotype2 == {WILD_TYPE, }]) / pop)
@@ -731,7 +728,7 @@ def print_status(time, population, output,
 
 def run_simulation(start_populations,
                    repetition=0, end_time=365,
-                   time_step=TIME_STEP, release=POPULATION,
+                   time_step=TIME_STEP, release=RELEASE,
                    report_times=None, release_days=RELEASE_DAYS):
     '''Run a full large-cage simulation given a series of start populations
     
@@ -771,12 +768,17 @@ def run_simulation(start_populations,
     # eggs are harvested in the next feeding cycle
     previous_eggs = set()
 
+    # reverse the order of initial populations
+    # so that we can use the "pop" function
+    start_populations = start_populations[::-1]
     population = start_populations.pop()
 
     while len(population) > 0 and total_time < end_time:
         initial_population = False
         total_time += time_step
         total_time = round(total_time, 1)
+        if total_time == 0:
+            initial_population = True
 
         # age
         dead = set()
@@ -822,6 +824,7 @@ def run_simulation(start_populations,
             if len(previous_eggs) > 0:
                 eggs_nursery = eggs_nursery.union(previous_eggs)
             previous_eggs = set()
+            latest_eggs = set()
 
             # mate adults (we are after feeding)
             eggs = mate_all(population)
