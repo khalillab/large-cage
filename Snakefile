@@ -27,7 +27,8 @@ rule baseline:
       python3 src/simulation.py \
           --drive 0 0 \
           --antidote 0 0 \
-          --pop-size {params.pop_size} \
+          --wild-type {params.pop_size} {params.pop_size} \
+          --release {params.pop_size} \
           --repetitions {params.repetitions} \
           > {output}
       '''
@@ -56,13 +57,15 @@ rule no_antidote:
       python3 src/simulation.py \
           --drive {params.drive_25_1} {params.drive_25_2} \
           --antidote 0 0 \
-          --pop-size {params.pop_size} \
+          --wild-type {params.pop_size} {params.pop_size} \
+          --release {params.pop_size} \
           --repetitions {params.repetitions} \
           --time-points {input.time_points} > {output.drive_25}
       python3 src/simulation.py \
           --drive {params.drive_50_1} {params.drive_50_2} \
           --antidote 0 0 \
-          --pop-size {params.pop_size} \
+          --wild-type {params.pop_size} {params.pop_size} \
+          --release {params.pop_size} \
           --repetitions {params.repetitions} \
           --time-points {input.time_points} > {output.drive_50}
       '''
@@ -92,7 +95,8 @@ rule run_simulation:
       python3 src/simulation.py \
           --drive {params.drive} {params.drive} \
           --antidote {params.anti} {params.anti} \
-          --pop-size {params.pop_size} \
+          --wild-type {params.pop_size} {params.pop_size} \
+          --release {params.pop_size} \
           --het-antidote-effect {wildcards.effect} \
           --repetitions {params.repetitions} > {output}
       '''
@@ -121,7 +125,8 @@ rule run_simulation_no_antidote_cost:
       python3 src/simulation.py \
           --drive {params.drive} {params.drive} \
           --antidote {params.anti} {params.anti} \
-          --pop-size {params.pop_size} \
+          --wild-type {params.pop_size} {params.pop_size} \
+          --release {params.pop_size} \
           --hom-antidote-effect {wildcards.hom} \
           --het-antidote-effect {wildcards.het} \
           --repetitions {params.repetitions} > {output}
