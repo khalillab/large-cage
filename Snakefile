@@ -55,16 +55,16 @@ rule no_antidote:
   shell:
       '''
       python3 src/simulation.py \
-          --drive 0 0 0 0 {params.drive_25_1} {params.drive_25_2} \
-          --antidote 0 0 0 0 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --drive 0 0 0 0 0 0 {params.drive_25_1} {params.drive_25_2} \
+          --antidote 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
           --release {params.pop_size} \
           --repetitions {params.repetitions} \
           --time-points {input.time_points} > {output.drive_25}
       python3 src/simulation.py \
-          --drive 0 0 0 0 {params.drive_50_1} {params.drive_50_2} \
-          --antidote 0 0 0 0 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --drive 0 0 0 0 0 0 {params.drive_50_1} {params.drive_50_2} \
+          --antidote 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
           --release {params.pop_size} \
           --repetitions {params.repetitions} \
           --time-points {input.time_points} > {output.drive_50}
@@ -93,9 +93,9 @@ rule run_simulation:
   shell:
       '''
       python3 src/simulation.py \
-          --drive 0 0 0 0 {params.drive} {params.drive} \
-          --antidote 0 0 0 0 {params.anti} {params.anti} \
-          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --drive 0 0 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
           --release {params.pop_size} \
           --het-antidote-effect {wildcards.effect} \
           --repetitions {params.repetitions} > {output}
@@ -123,9 +123,9 @@ rule run_simulation_no_antidote_cost:
   shell:
       '''
       python3 src/simulation.py \
-          --drive 0 0 0 0 {params.drive} {params.drive} \
-          --antidote 0 0 0 0 {params.anti} {params.anti} \
-          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --drive 0 0 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
           --release {params.pop_size} \
           --hom-antidote-effect {wildcards.hom} \
           --het-antidote-effect {wildcards.het} \
