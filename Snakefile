@@ -21,7 +21,7 @@ rule baseline:
       'out/wt.tsv'
   params:
       pop_size = POP_SIZE,
-      repetitions = REPETITIONS
+      repetitions = int(REPETITIONS / 5)
   shell:
       '''
       python3 src/simulation.py \
