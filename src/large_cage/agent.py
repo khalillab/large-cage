@@ -840,8 +840,8 @@ def run_simulation(start_populations,
             if len(pupae) > 0:
                 # pick 400 random new pupae to introduce
                 random.shuffle(pupae)
-                pupae = pupae[:release]
-                population = population.union(pupae)
+                release_pupae = pupae[:release]
+                population = population.union(release_pupae)
                 # remove eggs from nursery
                 for p in pupae:
                     eggs_nursery.remove(p)
