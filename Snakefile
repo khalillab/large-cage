@@ -1,8 +1,8 @@
 POP_SIZE = 400
 REPETITIONS = 100
 DRIVES = [0.25, 0.5]
-ANTIS = [0, 0.25, 0.5, 0.75, 1]
-ANTI_EFFECTS = [0.3, 0.6, 0.9]
+ANTIS = [0, 0.5, 1]
+ANTI_EFFECTS = [0.3, 0.9]
 
 rule files:
   params:
@@ -25,9 +25,9 @@ rule baseline:
   shell:
       '''
       python3 src/simulation.py \
-          --drive 0 0 \
-          --antidote 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} \
+          --drive 0 0 0 0 0 0 \
+          --antidote 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
           --release {params.pop_size} \
           --repetitions {params.repetitions} \
           > {output}
@@ -55,16 +55,16 @@ rule no_antidote:
   shell:
       '''
       python3 src/simulation.py \
-          --drive {params.drive_25_1} {params.drive_25_2} \
-          --antidote 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} \
+          --drive 0 0 0 0 {params.drive_25_1} {params.drive_25_2} \
+          --antidote 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
           --release {params.pop_size} \
           --repetitions {params.repetitions} \
           --time-points {input.time_points} > {output.drive_25}
       python3 src/simulation.py \
-          --drive {params.drive_50_1} {params.drive_50_2} \
-          --antidote 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} \
+          --drive 0 0 0 0 {params.drive_50_1} {params.drive_50_2} \
+          --antidote 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
           --release {params.pop_size} \
           --repetitions {params.repetitions} \
           --time-points {input.time_points} > {output.drive_50}
@@ -93,9 +93,9 @@ rule run_simulation:
   shell:
       '''
       python3 src/simulation.py \
-          --drive {params.drive} {params.drive} \
-          --antidote {params.anti} {params.anti} \
-          --wild-type {params.pop_size} {params.pop_size} \
+          --drive 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
           --release {params.pop_size} \
           --het-antidote-effect {wildcards.effect} \
           --repetitions {params.repetitions} > {output}
@@ -123,9 +123,9 @@ rule run_simulation_no_antidote_cost:
   shell:
       '''
       python3 src/simulation.py \
-          --drive {params.drive} {params.drive} \
-          --antidote {params.anti} {params.anti} \
-          --wild-type {params.pop_size} {params.pop_size} \
+          --drive 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
           --release {params.pop_size} \
           --hom-antidote-effect {wildcards.hom} \
           --het-antidote-effect {wildcards.het} \
