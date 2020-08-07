@@ -830,8 +830,8 @@ def run_simulation(start_populations,
             eggs = mate_all(population)
 
             # save current egg status
-            latest_eggs = deepcopy(eggs)
-            previous_eggs = deepcopy(eggs)
+            latest_eggs = latest_eggs.union(deepcopy(eggs))
+            previous_eggs = previous_eggs.union(deepcopy(eggs))
 
             if len(start_populations) > 0 and total_time > 1:
                 initial_population = True
