@@ -1,8 +1,13 @@
 POP_SIZE = 400
-REPETITIONS = 100
+REPETITIONS = 50
 DRIVES = [0.25, 0.5]
 ANTIS = [0, 0.5, 1]
 ANTI_EFFECTS = [0.3, 0.9]
+# late releases
+LATE_WT = 100
+LATE_ANTI = 100
+LATE_START = 30
+LATE_COUNT = 10
 
 rule files:
   params:
@@ -132,10 +137,231 @@ rule run_simulation_no_antidote_cost:
           --repetitions {params.repetitions} > {output}
       '''
 
+rule simulations_late_wt:
+  input:
+    expand('out/simulation_late_wt/{effect}-{drive}-{anti}.tsv',
+           effect=ANTI_EFFECTS,
+           drive=DRIVES,
+           anti=ANTIS)
+
+rule run_simulation_late_wt:
+  message:
+    '''
+    Run simulations (late WT release)
+    '''
+  output:
+      'out/simulation_late_wt/{effect}-{drive}-{anti}.tsv'
+  params:
+      pop_size = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = lambda wildcards: int(float(wildcards.drive) * POP_SIZE / 2),
+      anti = lambda wildcards: int(float(wildcards.anti) * POP_SIZE / 2),
+      late_start = LATE_START,
+      late_wt = LATE_WT
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --release {params.pop_size} \
+          --het-antidote-effect {wildcards.effect} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-wt {params.late_wt} \
+          --repetitions {params.repetitions} > {output}
+      '''
+
+rule simulations_late_wt_no_antidote_cost:
+  input:
+    expand('out/simulation_late_wt_antidote_cost/{hom}-{het}-{drive}-{anti}.tsv',
+           het=[1], hom=[1],
+           drive=DRIVES,
+           anti=ANTIS)
+
+rule run_simulation_late_wt_no_antidote_cost:
+  message:
+    '''
+    Run simulations (late WT release, antidote has no fitness cost)
+    '''
+  output:
+      'out/simulation_late_wt_antidote_cost/{hom}-{het}-{drive}-{anti}.tsv'
+  params:
+      pop_size = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = lambda wildcards: int(float(wildcards.drive) * POP_SIZE / 2),
+      anti = lambda wildcards: int(float(wildcards.anti) * POP_SIZE / 2),
+      late_start = LATE_START,
+      late_wt = LATE_WT
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --release {params.pop_size} \
+          --hom-antidote-effect {wildcards.hom} \
+          --het-antidote-effect {wildcards.het} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-wt {params.late_wt} \
+          --repetitions {params.repetitions} > {output}
+      '''
+
+rule simulations_late_anti:
+  input:
+    expand('out/simulation_late_anti/{effect}-{drive}-{anti}.tsv',
+           effect=ANTI_EFFECTS,
+           drive=DRIVES,
+           anti=ANTIS)
+
+rule run_simulation_late_anti:
+  message:
+    '''
+    Run simulations (late antidote release)
+    '''
+  output:
+      'out/simulation_late_anti/{effect}-{drive}-{anti}.tsv'
+  params:
+      pop_size = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = lambda wildcards: int(float(wildcards.drive) * POP_SIZE / 2),
+      anti = lambda wildcards: int(float(wildcards.anti) * POP_SIZE / 2),
+      late_start = LATE_START,
+      late_anti = LATE_ANTI
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --release {params.pop_size} \
+          --het-antidote-effect {wildcards.effect} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.late_anti} \
+          --repetitions {params.repetitions} > {output}
+      '''
+
+rule simulations_late_anti_no_antidote_cost:
+  input:
+    expand('out/simulation_late_anti_antidote_cost/{hom}-{het}-{drive}-{anti}.tsv',
+           het=[1], hom=[1],
+           drive=DRIVES,
+           anti=ANTIS)
+
+rule run_simulation_late_anti_no_antidote_cost:
+  message:
+    '''
+    Run simulations (late antidote release, antidote has no fitness cost)
+    '''
+  output:
+      'out/simulation_late_anti_antidote_cost/{hom}-{het}-{drive}-{anti}.tsv'
+  params:
+      pop_size = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = lambda wildcards: int(float(wildcards.drive) * POP_SIZE / 2),
+      anti = lambda wildcards: int(float(wildcards.anti) * POP_SIZE / 2),
+      late_start = LATE_START,
+      late_anti = LATE_ANTI
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --release {params.pop_size} \
+          --hom-antidote-effect {wildcards.hom} \
+          --het-antidote-effect {wildcards.het} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.late_anti} \
+          --repetitions {params.repetitions} > {output}
+      '''
+
+rule simulations_late_anti_once:
+  input:
+    expand('out/simulation_late_anti_once/{effect}-{drive}-{anti}.tsv',
+           effect=ANTI_EFFECTS,
+           drive=DRIVES,
+           anti=ANTIS)
+
+rule run_simulation_late_anti_once:
+  message:
+    '''
+    Run simulations (late antidote release, not continuously)
+    '''
+  output:
+      'out/simulation_late_anti_once/{effect}-{drive}-{anti}.tsv'
+  params:
+      pop_size = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = lambda wildcards: int(float(wildcards.drive) * POP_SIZE / 2),
+      anti = lambda wildcards: int(float(wildcards.anti) * POP_SIZE / 2),
+      late_start = LATE_START,
+      late_anti = LATE_ANTI,
+      late_count = LATE_COUNT
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --release {params.pop_size} \
+          --het-antidote-effect {wildcards.effect} \
+          --late-releases {params.late_count} \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.late_anti} \
+          --repetitions {params.repetitions} > {output}
+      '''
+
+rule simulations_late_anti_once_no_antidote_cost:
+  input:
+    expand('out/simulation_late_anti_once_antidote_cost/{hom}-{het}-{drive}-{anti}.tsv',
+           het=[1], hom=[1],
+           drive=DRIVES,
+           anti=ANTIS)
+
+rule run_simulation_late_anti_once_no_antidote_cost:
+  message:
+    '''
+    Run simulations (late antidote release, not continuously, antidote has no fitness cost)
+    '''
+  output:
+      'out/simulation_late_anti_once_antidote_cost/{hom}-{het}-{drive}-{anti}.tsv'
+  params:
+      pop_size = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = lambda wildcards: int(float(wildcards.drive) * POP_SIZE / 2),
+      anti = lambda wildcards: int(float(wildcards.anti) * POP_SIZE / 2),
+      late_start = LATE_START,
+      late_anti = LATE_ANTI,
+      late_count = LATE_COUNT
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 {params.anti} {params.anti} \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} 0 0 \
+          --release {params.pop_size} \
+          --hom-antidote-effect {wildcards.hom} \
+          --het-antidote-effect {wildcards.het} \
+          --late-releases {params.late_count} \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.late_anti} \
+          --repetitions {params.repetitions} > {output}
+      '''
+
 rule all:
   input:
     rules.baseline.output,
     rules.simulations.input,
     rules.simulations_no_antidote_cost.input,
+    rules.simulations_late_wt.input,
+    rules.simulations_late_wt_no_antidote_cost.input,
+    rules.simulations_late_anti.input,
+    rules.simulations_late_anti_no_antidote_cost.input,
+    rules.simulations_late_anti_once.input,
+    rules.simulations_late_anti_once_no_antidote_cost.input,
     rules.no_antidote.output.drive_25,
     rules.no_antidote.output.drive_50
