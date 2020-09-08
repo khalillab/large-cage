@@ -729,7 +729,8 @@ def print_status(time, population, output,
 def run_simulation(start_populations,
                    repetition=0, end_time=365,
                    time_step=TIME_STEP, release=RELEASE,
-                   report_times=None, release_days=RELEASE_DAYS):
+                   report_times=None, release_days=RELEASE_DAYS,
+                   additional_releases=None):
     '''Run a full large-cage simulation given a series of start populations
     
     Args:
@@ -753,6 +754,11 @@ def run_simulation(start_populations,
         release_days (iterable of int)
             Days of the week for releases and blood meals. Zero corresponds
             to Monday, six to Sunday
+        additional_releases (tuple)
+            Additional releases; first element is an iterable of adults,
+            the second element is the timepoint at which to start the
+            release(s), the third one is the number of releases,
+            -1 indicates indefinite releases
     '''
     if report_times is None:
         report_times = []
@@ -772,6 +778,9 @@ def run_simulation(start_populations,
     # so that we can use the "pop" function
     start_populations = start_populations[::-1]
     population = start_populations.pop()
+
+    # counter for additional releases
+    additional_releases_counter = 0
 
     while len(population) > 0 and total_time < end_time:
         initial_population = False
@@ -826,6 +835,19 @@ def run_simulation(start_populations,
             previous_eggs = set()
             latest_eggs = set()
 
+            # add further start populations
+            if len(start_populations) > 0 and total_time > 1:
+                initial_population = True
+                for indv in start_populations.pop():
+                    population.add(indv)
+
+            # additional releases (to be done before mating)
+            if additional_releases is not None and additional_releases[1] < total_time:
+                additional_releases_counter += 1
+                if additional_releases[2] == -1 or additional_releases_counter <= additional_releases[2]:
+                    for adult in additional_releases[0]:
+                        population.add(deepcopy(adult))
+
             # mate adults (we are after feeding)
             eggs = mate_all(population)
 
@@ -833,10 +855,6 @@ def run_simulation(start_populations,
             latest_eggs = latest_eggs.union(deepcopy(eggs))
             previous_eggs = previous_eggs.union(deepcopy(eggs))
 
-            if len(start_populations) > 0 and total_time > 1:
-                initial_population = True
-                for indv in start_populations.pop():
-                    population.add(indv)
             if len(pupae) > 0:
                 # pick 400 random new pupae to introduce
                 random.shuffle(pupae)

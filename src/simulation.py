@@ -60,6 +60,30 @@ def get_options():
                         default=None,
                         help='Time points for printing simulation status '
                              '(one float per line; default: every day)')
+    
+    parser.add_argument('--late-releases',
+                        type=int,
+                        default=None,
+                        help='Number of late releases (e.g. how many releases; '
+                             'default: none, -1 indicates continuos releases)')
+    parser.add_argument('--late-releases-start',
+                        type=float,
+                        default=30,
+                        help='Start of late releases (e.g. what time; '
+                             'default: %(default).2f, nothing happens unless '
+                             'the --late-antidote or --late-wt args are used)')
+    parser.add_argument('--late-antidote',
+                        type=int,
+                        default=None,
+                        help='Late release of antidote adults '
+                             '(how many adults to release; '
+                             'default: no late release)')
+    parser.add_argument('--late-wt',
+                        type=int,
+                        default=None,
+                        help='Late release of wild-type adults '
+                             '(how many adults to release; '
+                             'default: no late release)')
 
     return parser.parse_args()
 
@@ -139,8 +163,28 @@ if __name__ == "__main__":
                 population.add(x)
 
             start_populations.append(population)
-        
+       
+        late_releases = None
+        if options.late_releases is not None:
+            late_releases_start = options.late_releases_start
+            late_releases_counter = options.late_releases
+            late = set()
+            if options.late_antidote is not None:
+                for i in range(int(options.late_antidote)):
+                    # het. male antidotes
+                    x = Individual('m', ['W', 'W'], ['A', 'W'])
+                    x.stage = 'adult'
+                    late.add(x)
+            if options.late_wt is not None:
+                for i in range(int(options.late_wt)):
+                    # het. male antidotes
+                    x = Individual('m', ['W', 'W'], ['W', 'W'])
+                    x.stage = 'adult'
+                    late.add(x)
+            late_releases = (late, late_releases_start, late_releases_counter)
+
         run_simulation(start_populations,
                        repetition=j,
                        report_times=time_points,
-                       release=agent.RELEASE)
+                       release=agent.RELEASE,
+                       additional_releases=late_releases)
