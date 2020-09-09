@@ -62,6 +62,23 @@ cage are developed.
 Since we didn't provide the `--time-points` argument, the script will report
 output for each day of the simulations.
 
+Additional releases
+----
+
+The `simulation.py` script has the option to perform additional introductions
+of either wild-type males or heterozygous antidote males. The three following
+arguments have to be provided:
+
+* `--late-releases`: number of extra releases (-1 indicates continuous releases)
+* `--late-releases-start`: Start time to start the extra releases
+* `--late-antidote` and `--late-wt`: how many males to release (antidote or WT, respectively)
+
+Example:
+
+    python3 src/simulation.py --drive 100 100 --antidote 400 400 --wild-type 400 400 --late-releases -1 --late-releases-start 30 --late-wt 100
+
+Will start releasing 100 male WT individuals starting from day 30 at each feeding cycle, until the end of the simulation.
+
 Output
 ----
 
