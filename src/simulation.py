@@ -46,6 +46,11 @@ def get_options():
                         default=['0', '0'],
                         help='Population sizes for het. male antidotes, initial releases '
                              '(each initial introduction; default: %(default)s)')
+    parser.add_argument('--hom-antidote',
+                        default=False,
+                        action='store_true',
+                        help='Release homozygous antidote males '
+                             '(default: het.)')
     parser.add_argument('--hom-antidote-effect',
                         type=float,
                         default=agent.HOM_ANTIDRIVE_EFFECT,
@@ -148,9 +153,14 @@ if __name__ == "__main__":
                 x.stage = 'adult'
                 population.add(x)
             for i in range(anti):
-                # het. male antidotes
-                x = Individual('m', ['W', 'W'], ['A', 'W'])
-                x.stage = 'adult'
+                if not options.hom_antidote:
+                    # het. male antidotes
+                    x = Individual('m', ['W', 'W'], ['A', 'W'])
+                    x.stage = 'adult'
+                else:
+                    # hom. male antidotes
+                    x = Individual('m', ['W', 'W'], ['A', 'A'])
+                    x.stage = 'adult'
                 population.add(x)
 
             # wild-type individuals
@@ -177,8 +187,14 @@ if __name__ == "__main__":
                     late.add(x)
             if options.late_wt is not None:
                 for i in range(int(options.late_wt)):
-                    # het. male antidotes
-                    x = Individual('m', ['W', 'W'], ['W', 'W'])
+                    if not options.hom_antidote:
+                        # het. male antidotes
+                        x = Individual('m', ['W', 'W'], ['A', 'W'])
+                        x.stage = 'adult'
+                    else:
+                        # hom. male antidotes
+                        x = Individual('m', ['W', 'W'], ['A', 'A'])
+                        x.stage = 'adult'
                     x.stage = 'adult'
                     late.add(x)
             late_releases = (late, late_releases_start, late_releases_counter)
