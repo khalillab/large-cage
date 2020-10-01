@@ -842,7 +842,7 @@ def run_simulation(start_populations,
                     population.add(indv)
 
             # additional releases (to be done before mating)
-            if additional_releases is not None and additional_releases[1] < total_time:
+            if additional_releases is not None and total_time >= additional_releases[1]:
                 additional_releases_counter += 1
                 if additional_releases[2] == -1 or additional_releases_counter <= additional_releases[2]:
                     for adult in additional_releases[0]:
