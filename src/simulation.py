@@ -30,6 +30,12 @@ def get_options():
                         default=agent.RELEASE,
                         help='Release size (how many pupae to release; '
                              'default: %(default)d)')
+    parser.add_argument('--special-release',
+                        nargs='+',
+                        default=None,
+                        help='Release size for specific days; '
+                             'format: day:release_size '
+                             '(default: use --release-size)')
     parser.add_argument('--wild-type',
                         nargs='+',
                         default=['400', '400'],
@@ -137,6 +143,12 @@ if __name__ == "__main__":
         time_points = {float(l.rstrip()) for l in open(options.time_points)}
     else:
         time_points = None
+
+    special_releases = {}
+    if options.special_release is not None:
+        for release in options.special_release:
+            day, size = release.split(':')
+            special_releases[int(day)] = int(size)
     
     print_header()
     for j in range(agent.REPETITIONS):
@@ -203,4 +215,5 @@ if __name__ == "__main__":
                        repetition=j,
                        report_times=time_points,
                        release=agent.RELEASE,
+                       special_releases=special_releases,
                        additional_releases=late_releases)

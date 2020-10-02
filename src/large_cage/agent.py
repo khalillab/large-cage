@@ -729,6 +729,7 @@ def print_status(time, population, output,
 def run_simulation(start_populations,
                    repetition=0, end_time=365,
                    time_step=TIME_STEP, release=RELEASE,
+                   special_releases=None,
                    report_times=None, release_days=RELEASE_DAYS,
                    additional_releases=None):
     '''Run a full large-cage simulation given a series of start populations
@@ -748,6 +749,8 @@ def run_simulation(start_populations,
             NOTE: A time step larger than 0.1 may cause unforeseen bugs
         release (int)
             Maximum number of pupae released on release days
+        special_releases (dict)
+            key: time, value: release size for that time
         report_times (iterable of int)
             Days for which to report genotype frequencies; by default
             it is done every day
@@ -762,6 +765,8 @@ def run_simulation(start_populations,
     '''
     if report_times is None:
         report_times = []
+    if special_releases is None:
+        special_releases = {}
 
     total_time = -time_step
 
@@ -858,7 +863,11 @@ def run_simulation(start_populations,
             if len(pupae) > 0:
                 # pick 400 random new pupae to introduce
                 random.shuffle(pupae)
-                release_pupae = pupae[:release]
+                if not round(total_time, 2) % 1 and int(total_time) in special_releases:
+                    special = special_releases[int(total_time)]
+                    release_pupae = pupae[:special]
+                else:
+                    release_pupae = pupae[:release]
                 population = population.union(release_pupae)
                 # remove eggs from nursery
                 for p in pupae:
