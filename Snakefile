@@ -480,6 +480,8 @@ rule run_A_scenario:
           --special-release 1:{params.pop_size} 4:{params.pop_size} 8:{params.pop_size} \
                             11:{params.pop_size} 15:{params.pop_size} \
                             18:{params.pop_size} 22:{params.pop_size} 25:{params.pop_size} \
+                            29:{params.pop_size} 32:{params.pop_size} 36:{params.pop_size} \
+                            39:{params.pop_size} 43:{params.pop_size} 46:{params.pop_size} \
           --het-antidote-effect {wildcards.effect} \
           --late-releases -1 \
           --late-releases-start {params.late_start} \
@@ -498,6 +500,8 @@ rule run_A_scenario:
           --special-release 1:{params.pop_size} 4:{params.pop_size} 8:{params.pop_size} \
                             11:{params.pop_size} 15:{params.pop_size} \
                             18:{params.pop_size} 22:{params.pop_size} 25:{params.pop_size} \
+                            29:{params.pop_size} 32:{params.pop_size} 36:{params.pop_size} \
+                            39:{params.pop_size} 43:{params.pop_size} 46:{params.pop_size} \
           --hom-antidote \
           --het-antidote-effect {wildcards.effect} \
           --late-releases -1 \
@@ -535,6 +539,8 @@ rule A_scenario_no_fitness_cost:
           --special-release 1:{params.pop_size} 4:{params.pop_size} 8:{params.pop_size} \
                             11:{params.pop_size} 15:{params.pop_size} \
                             18:{params.pop_size} 22:{params.pop_size} 25:{params.pop_size} \
+                            29:{params.pop_size} 32:{params.pop_size} 36:{params.pop_size} \
+                            39:{params.pop_size} 43:{params.pop_size} 46:{params.pop_size} \
           --het-antidote-effect 1 \
           --hom-antidote-effect 1 \
           --late-releases -1 \
@@ -554,6 +560,8 @@ rule A_scenario_no_fitness_cost:
           --special-release 1:{params.pop_size} 4:{params.pop_size} 8:{params.pop_size} \
                             11:{params.pop_size} 15:{params.pop_size} \
                             18:{params.pop_size} 22:{params.pop_size} 25:{params.pop_size} \
+                            29:{params.pop_size} 32:{params.pop_size} 36:{params.pop_size} \
+                            39:{params.pop_size} 43:{params.pop_size} 46:{params.pop_size} \
           --hom-antidote \
           --het-antidote-effect 1 \
           --hom-antidote-effect 1 \
@@ -805,15 +813,221 @@ rule C_scenario_no_fitness_cost:
           --repetitions {params.repetitions} > {output}.hom
       '''
 
+rule D_scenario:
+  input:
+    expand('out/final/D/{effect}.tsv',
+           effect=ANTI_EFFECTS)
+
+rule run_D_scenario:
+  message:
+    '''
+    Run final simulations (D scenario w/ fitness cost)
+    '''
+  output:
+      'out/final/D/{effect}.tsv'
+  params:
+      pop_size = POP_SIZE,
+      release = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = FINAL_DRIVE,
+      anti = FINAL_ANTI,
+      late_start = FINAL_LATE_START,
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --het-antidote-effect {wildcards.effect} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --repetitions {params.repetitions} > {output}
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect {wildcards.effect} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --repetitions {params.repetitions} > {output}.hom
+      '''
+
+rule D_scenario_no_fitness_cost:
+  message:
+    '''
+    Run final simulations (D scenario w/o fitness cost)
+    '''
+  output:
+      'out/final/D/1.tsv'
+  params:
+      pop_size = POP_SIZE,
+      release = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = FINAL_DRIVE,
+      anti = FINAL_ANTI,
+      late_start = FINAL_LATE_START,
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --het-antidote-effect 1 \
+          --hom-antidote-effect 1 \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --repetitions {params.repetitions} > {output}
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect 1 \
+          --hom-antidote-effect 1 \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --repetitions {params.repetitions} > {output}.hom
+      '''
+
+rule E_scenario:
+  input:
+    expand('out/final/E/{effect}.tsv',
+           effect=ANTI_EFFECTS)
+
+rule run_E_scenario:
+  message:
+    '''
+    Run final simulations (E scenario w/ fitness cost)
+    '''
+  output:
+      'out/final/E/{effect}.tsv'
+  params:
+      pop_size = POP_SIZE,
+      release = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = FINAL_DRIVE,
+      anti = FINAL_ANTI_ALT,
+      late_start = FINAL_LATE_START,
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --het-antidote-effect {wildcards.effect} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --repetitions {params.repetitions} > {output}
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect {wildcards.effect} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --repetitions {params.repetitions} > {output}.hom
+      '''
+
+rule E_scenario_no_fitness_cost:
+  message:
+    '''
+    Run final simulations (C scenario w/o fitness cost)
+    '''
+  output:
+      'out/final/E/1.tsv'
+  params:
+      pop_size = POP_SIZE,
+      release = POP_SIZE,
+      repetitions = REPETITIONS,
+      drive = FINAL_DRIVE,
+      anti = FINAL_ANTI_ALT,
+      late_start = FINAL_LATE_START,
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --het-antidote-effect 1 \
+          --hom-antidote-effect 1 \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --repetitions {params.repetitions} > {output}
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect 1 \
+          --hom-antidote-effect 1 \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --repetitions {params.repetitions} > {output}.hom
+      '''
+
 rule final:
   input:
     rules.control_scenario.output,
     rules.A_scenario.input,
     rules.B_scenario.input,
     rules.C_scenario.input,
+    rules.D_scenario.input,
+    rules.E_scenario.input,
     rules.A_scenario_no_fitness_cost.output,
     rules.B_scenario_no_fitness_cost.output,
     rules.C_scenario_no_fitness_cost.output,
+    rules.D_scenario_no_fitness_cost.output,
+    rules.E_scenario_no_fitness_cost.output,
 
 rule all:
   input:
