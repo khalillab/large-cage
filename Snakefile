@@ -1017,61 +1017,9 @@ rule E_scenario_no_fitness_cost:
       '''
 
 rule F_scenario:
-  input:
-    expand('out/final/F/{effect}.tsv',
-           effect=ANTI_EFFECTS)
-
-rule run_F_scenario:
   message:
     '''
-    Run final simulations (F scenario w/ fitness cost)
-    '''
-  output:
-      'out/final/F/{effect}.tsv'
-  params:
-      pop_size = POP_SIZE,
-      release = POP_SIZE,
-      repetitions = REPETITIONS,
-      drive = FINAL_DRIVE,
-      wt = FINAL_WT,
-      late_start = FINAL_LATE_START,
-  shell:
-      '''
-      python3 src/simulation.py \
-          --drive 0 0 0 0 0 0 0 0 \
-                  {params.drive} {params.drive} {params.drive} \
-                  {params.drive} {params.drive} {params.drive} \
-          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
-                      0 0 0 0 \
-                      0 0 0 0 0 0 \
-          --release {params.release} \
-          --het-antidote-effect {wildcards.effect} \
-          --late-releases -1 \
-          --late-releases-start {params.late_start} \
-          --late-wt {params.wt} \
-          --repetitions {params.repetitions} > {output}
-      python3 src/simulation.py \
-          --drive 0 0 0 0 0 0 0 0 \
-                  {params.drive} {params.drive} {params.drive} \
-                  {params.drive} {params.drive} {params.drive} \
-          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
-                      0 0 0 0 \
-                      0 0 0 0 0 0 \
-          --release {params.release} \
-          --hom-antidote \
-          --het-antidote-effect {wildcards.effect} \
-          --late-releases -1 \
-          --late-releases-start {params.late_start} \
-          --late-wt {params.wt} \
-          --repetitions {params.repetitions} > {output}.hom
-      '''
-
-rule F_scenario_no_fitness_cost:
-  message:
-    '''
-    Run final simulations (F scenario w/o fitness cost)
+    Run final simulations (F scenario)
     '''
   output:
       'out/final/F/1.tsv'
@@ -1093,28 +1041,10 @@ rule F_scenario_no_fitness_cost:
                       0 0 0 0 \
                       0 0 0 0 0 0 \
           --release {params.release} \
-          --het-antidote-effect 1 \
-          --hom-antidote-effect 1 \
           --late-releases -1 \
           --late-releases-start {params.late_start} \
           --late-wt {params.wt} \
           --repetitions {params.repetitions} > {output}
-      python3 src/simulation.py \
-          --drive 0 0 0 0 0 0 0 0 \
-                  {params.drive} {params.drive} {params.drive} \
-                  {params.drive} {params.drive} {params.drive} \
-          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
-                      0 0 0 0 \
-                      0 0 0 0 0 0 \
-          --release {params.release} \
-          --hom-antidote \
-          --het-antidote-effect 1 \
-          --hom-antidote-effect 1 \
-          --late-releases -1 \
-          --late-releases-start {params.late_start} \
-          --late-wt {params.wt} \
-          --repetitions {params.repetitions} > {output}.hom
       '''
 
 
@@ -1126,13 +1056,12 @@ rule final:
     rules.C_scenario.input,
     rules.D_scenario.input,
     rules.E_scenario.input,
-    rules.F_scenario.input,
+    rules.F_scenario.output,
     rules.A_scenario_no_fitness_cost.output,
     rules.B_scenario_no_fitness_cost.output,
     rules.C_scenario_no_fitness_cost.output,
     rules.D_scenario_no_fitness_cost.output,
     rules.E_scenario_no_fitness_cost.output,
-    rules.F_scenario_no_fitness_cost.output,
 
 rule all:
   input:
