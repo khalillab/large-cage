@@ -168,11 +168,10 @@ if __name__ == "__main__":
                 if not options.hom_antidote:
                     # het. male antidotes
                     x = Individual('m', ['W', 'W'], ['A', 'W'])
-                    x.stage = 'adult'
                 else:
                     # hom. male antidotes
                     x = Individual('m', ['W', 'W'], ['A', 'A'])
-                    x.stage = 'adult'
+                x.stage = 'adult'
                 population.add(x)
 
             # wild-type individuals
@@ -193,20 +192,17 @@ if __name__ == "__main__":
             late = set()
             if options.late_antidote is not None:
                 for i in range(int(options.late_antidote)):
-                    # het. male antidotes
-                    x = Individual('m', ['W', 'W'], ['A', 'W'])
+                    if not options.hom_antidote:
+                        # het. male antidotes
+                        x = Individual('m', ['W', 'W'], ['A', 'W'])
+                    else:
+                        # hom. male antidotes
+                        x = Individual('m', ['W', 'W'], ['A', 'A'])
                     x.stage = 'adult'
                     late.add(x)
             if options.late_wt is not None:
                 for i in range(int(options.late_wt)):
-                    if not options.hom_antidote:
-                        # het. male antidotes
-                        x = Individual('m', ['W', 'W'], ['A', 'W'])
-                        x.stage = 'adult'
-                    else:
-                        # hom. male antidotes
-                        x = Individual('m', ['W', 'W'], ['A', 'A'])
-                        x.stage = 'adult'
+                    x = Individual('m', ['W', 'W'], ['W', 'W'])
                     x.stage = 'adult'
                     late.add(x)
             late_releases = (late, late_releases_start, late_releases_counter)
