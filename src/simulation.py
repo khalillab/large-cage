@@ -71,7 +71,6 @@ def get_options():
                         default=None,
                         help='Time points for printing simulation status '
                              '(one float per line; default: every day)')
-    
     parser.add_argument('--late-releases',
                         type=int,
                         default=None,
@@ -95,6 +94,24 @@ def get_options():
                         help='Late release of wild-type adults '
                              '(how many adults to release; '
                              'default: no late release)')
+    parser.add_argument('--eggs-filter',
+                        default=False,
+                        action='store_true',
+                        help='Egg filter '
+                             '(to reduce the number of eggs; '
+                             'default: no filter)')
+    parser.add_argument('--eggs-filter-mean',
+                        type=float,
+                        default=agent.EGGS_FILTER_MEAN,
+                        help='Egg filter normal distribution mean '
+                             '(to reduce the number of eggs; '
+                             'default: %(default).3f)')
+    parser.add_argument('--eggs-filter-std',
+                        type=float,
+                        default=agent.EGGS_FILTER_STD,
+                        help='Egg filter normal distribution std-dev '
+                             '(to reduce the number of eggs; '
+                             'default: %(default).3f)')
 
     return parser.parse_args()
 
@@ -115,6 +132,12 @@ if __name__ == "__main__":
     sys.stderr.write('Changing parameter HET_ANTIDRIVE_EFFECT from its '
                      'default (using the script arguments)\n')
     agent.HET_ANTIDRIVE_EFFECT = options.het_antidote_effect
+    sys.stderr.write('Changing parameter EGGS_FILTER_MEAN from its '
+                     'default (using the script arguments)\n')
+    agent.EGGS_FILTER_MEAN = options.eggs_filter_mean
+    sys.stderr.write('Changing parameter EGGS_FILTER_STD from its '
+                     'default (using the script arguments)\n')
+    agent.EGGS_FILTER_STD = options.eggs_filter_std
 
     # should we override the parameters?
     if options.override_parameters:
@@ -150,6 +173,12 @@ if __name__ == "__main__":
             day, size = release.split(':')
             special_releases[int(day)] = int(size)
     
+    if options.eggs_filter:
+        eggs_filter = (options.eggs_filter_mean,
+                       options.eggs_filter_std)
+    else:
+        eggs_filter = None
+
     print_header()
     for j in range(agent.REPETITIONS):
         # init
@@ -212,4 +241,5 @@ if __name__ == "__main__":
                        report_times=time_points,
                        release=agent.RELEASE,
                        special_releases=special_releases,
-                       additional_releases=late_releases)
+                       additional_releases=late_releases,
+                       eggs_filter=eggs_filter)

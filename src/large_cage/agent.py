@@ -129,6 +129,10 @@ INTERSEX_NUCL_FROM_FATHER = stats.norm(loc=0.0353,
                                        scale=0.0124)
 INTERSEX_NUCL_FROM_MOTHER = stats.norm(loc=0.0096,
                                        scale=0.0066)
+# eggs filter
+# (to simulate any problems with eggs production)
+EGGS_FILTER_MEAN = 1750 
+EGGS_FILTER_STD = 150
 
 class Individual():
     '''Individual mosquito model
@@ -731,7 +735,8 @@ def run_simulation(start_populations,
                    time_step=TIME_STEP, release=RELEASE,
                    special_releases=None,
                    report_times=None, release_days=RELEASE_DAYS,
-                   additional_releases=None):
+                   additional_releases=None,
+                   eggs_filter=None):
     '''Run a full large-cage simulation given a series of start populations
     
     Args:
@@ -762,11 +767,17 @@ def run_simulation(start_populations,
             the second element is the timepoint at which to start the
             release(s), the third one is the number of releases,
             -1 indicates indefinite releases
+        eggs_filter (tuple)
+            Trim the eggs output, according to a desired normal distribution
+            First element is the loc parameter, second is the scale.
     '''
     if report_times is None:
         report_times = []
     if special_releases is None:
         special_releases = {}
+    if eggs_filter is not None:
+        eggs_filter_norm = stats.norm(loc=eggs_filter[0],
+                                      scale=eggs_filter[1])
 
     total_time = -time_step
 
@@ -855,6 +866,16 @@ def run_simulation(start_populations,
 
             # mate adults (we are after feeding)
             eggs = mate_all(population)
+            # trim eggs if parameter is set
+            if eggs_filter is not None:
+                eggs = list(eggs)
+                random.shuffle(eggs)
+                eggs_to_keep = int(eggs_filter_norm.rvs())
+                if eggs_to_keep < 0:
+                    eggs_to_keep = 0
+                elif eggs_to_keep > len(eggs):
+                    eggs_to_keep = len(eggs)
+                eggs = set(eggs[:eggs_to_keep])
 
             # save current egg status
             latest_eggs = latest_eggs.union(deepcopy(eggs))

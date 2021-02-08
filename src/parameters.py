@@ -127,3 +127,7 @@ INTERSEX_NUCL_FROM_FATHER = stats.norm(loc=0.0353,
                                        scale=0.0124)
 INTERSEX_NUCL_FROM_MOTHER = stats.norm(loc=0.0096,
                                        scale=0.0066)
+# eggs filter
+# (to simulate any problems with eggs production)
+EGGS_FILTER_MEAN = 1750 
+EGGS_FILTER_STD = 150
