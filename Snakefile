@@ -1297,6 +1297,30 @@ rule C_scenario_no_fitness_cost_reduced:
           --repetitions {params.repetitions} > {output}.hom
       '''
 
+rule baseline_reduced:
+  message:
+    '''
+    Run simulations with WT population
+    '''
+  input:
+      time_points = files.time_points
+  output:
+      'out/wt_reduced.tsv'
+  params:
+      pop_size = POP_SIZE,
+      repetitions = int(REPETITIONS / 5)
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 \
+          --antidote 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+          --release {params.pop_size} \
+          --repetitions {params.repetitions} \
+          --override-parameters \
+          > {output}
+      '''
+
 rule final:
   input:
     rules.control_scenario.output,
@@ -1319,6 +1343,7 @@ rule final_filter:
 
 rule final_reduced:
   input:
+    rules.baseline_reduced.output,
     rules.C_scenario_reduced.input,
     rules.C_scenario_no_fitness_cost_reduced.output,
 
