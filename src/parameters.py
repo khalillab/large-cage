@@ -78,14 +78,14 @@ ANTI_DRIVE_EFFICIENCY = {'f': 1.,
 RESISTANCE_EFFICIENCY = {'f': 0.4685,
                          'm': 0.4685}
 # number of eggs
-EGGS_WT = stats.norm(loc=1635/150,
-                     scale=72/150)
-EGGS_NUCL_FROM_MOTHER = stats.norm(loc=531/150,
-                                   scale=103/150)
-EGGS_NUCL_FROM_FATHER = stats.norm(loc=1141/150,
-                                   scale=98/150)
-EGGS_NUCL_FROM_BOTH = stats.norm(loc=661/150,
-                                 scale=114/150)
+EGGS_WT = stats.norm(loc=137.4 * 0.225,
+                     scale=34.5 * 0.225)
+EGGS_NUCL_FROM_MOTHER = stats.norm(loc=118.96 * 0.225,
+                                   scale=34.5 * 0.225)
+EGGS_NUCL_FROM_FATHER = stats.norm(loc=59.67 * 0.225,
+                                   scale=50.6 * 0.225)
+EGGS_NUCL_FROM_BOTH = stats.norm(loc=59.67 * 0.225,
+                                 scale=50.6 * 0.225)
 # eggs hatching probability
 HATCHING_WT = stats.norm(loc=0.8667,
                          scale=0.0046)
