@@ -1182,6 +1182,8 @@ rule run_C_scenario_reduced:
     '''
     Run final simulations (C scenario w/ fitness cost)
     '''
+  input:
+      rules.baseline_reduced.output
   output:
       'out/final/C_reduced/{effect}.tsv'
   params:
@@ -1241,6 +1243,8 @@ rule C_scenario_no_fitness_cost_reduced:
     '''
     Run final simulations (C scenario w/o fitness cost)
     '''
+  input:
+      rules.baseline_reduced.output
   output:
       'out/final/C_reduced/1.tsv'
   params:
@@ -1311,6 +1315,7 @@ rule baseline_reduced:
       repetitions = int(REPETITIONS / 5)
   shell:
       '''
+      cp src/parameters_reduced.py src/parameters.py
       python3 src/simulation.py \
           --drive 0 0 0 0 \
           --antidote 0 0 0 0 \
