@@ -16,3 +16,21 @@ class GaussianMixture():
             return np.abs(samples[0])
         else:
             return np.abs(samples)
+
+class DistributionMixture():
+    def __init__(self, distributions, weights):
+        self._distributions = distributions
+        self._weights = np.array(weights)
+        self._weights /= self._weights.sum()
+
+    def rvs(self, n=1):
+        samples = []
+        for _ in range(n):
+            dist = np.random.choice(np.arange(len(self._distributions)),
+                                    p=self._weights)
+            sample = np.abs(self._distributions[dist].rvs(1))
+            samples.append(sample)
+        if n == 1:
+            return samples[0]
+        else:
+            return np.array(samples)
