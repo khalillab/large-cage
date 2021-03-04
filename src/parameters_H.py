@@ -20,16 +20,16 @@ from large_cage.distributions import DistributionMixture as _DM
 
 _eggs_wt = [[_stats.norm(loc=0, scale=0),
              _stats.norm(loc=1500, scale=300)],
-            [0.8, 0.2]]
+            [0.9, 0.1]]
 _eggs_nucl_from_mother = [[_stats.norm(loc=0, scale=0),
                            _stats.norm(loc=1299, scale=300)],
-                          [0.8, 0.2]]
+                          [0.9, 0.1]]
 _eggs_nucl_from_father = [[_stats.norm(loc=0, scale=0),
                            _stats.norm(loc=651, scale=300)],
-                          [0.8, 0.2]]
+                          [0.9, 0.1]]
 _eggs_nucl_from_both = [[_stats.norm(loc=0, scale=0),
                          _stats.norm(loc=651, scale=300)],
-                        [0.8, 0.2]]
+                        [0.9, 0.1]]
 
 # number of eggs
 EGGS_WT = _DM(_eggs_wt[0],

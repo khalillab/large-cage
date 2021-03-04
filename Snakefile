@@ -1490,10 +1490,13 @@ rule final_reduced:
     rules.C_scenario_reduced.input,
     rules.C_scenario_no_fitness_cost_reduced.output,
 
-rule final_GH:
+rule final_G:
   input:
     rules.G_baseline.output,
     rules.G_scenario.input,
+
+rule final_H:
+  input:
     rules.H_baseline.output,
     rules.H_scenario.input,
 
