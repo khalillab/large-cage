@@ -1182,8 +1182,6 @@ rule run_C_scenario_reduced:
     '''
     Run final simulations (C scenario w/ fitness cost)
     '''
-  input:
-      rules.baseline_reduced.output
   output:
       'out/final/C_reduced/{effect}.tsv'
   params:
@@ -1195,6 +1193,7 @@ rule run_C_scenario_reduced:
       late_start = FINAL_LATE_START,
   shell:
       '''
+      cp src/parameters_reduced.py src/parameters.py
       python3 src/simulation.py \
           --drive 0 0 0 0 0 0 0 0 \
                   {params.drive} {params.drive} {params.drive} \
@@ -1243,8 +1242,6 @@ rule C_scenario_no_fitness_cost_reduced:
     '''
     Run final simulations (C scenario w/o fitness cost)
     '''
-  input:
-      rules.baseline_reduced.output
   output:
       'out/final/C_reduced/1.tsv'
   params:
@@ -1256,6 +1253,7 @@ rule C_scenario_no_fitness_cost_reduced:
       late_start = FINAL_LATE_START,
   shell:
       '''
+      cp src/parameters_reduced.py src/parameters.py
       python3 src/simulation.py \
           --drive 0 0 0 0 0 0 0 0 \
                   {params.drive} {params.drive} {params.drive} \
@@ -1326,6 +1324,146 @@ rule baseline_reduced:
           > {output}
       '''
 
+rule G_scenario:
+  input:
+    expand('out/final/G/{effect}.tsv',
+           effect=[0.3, 0.9, 1])
+
+rule run_G_scenario:
+  message:
+    '''
+    Run final simulations (G scenario)
+    '''
+  output:
+      'out/final/G/{effect}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 50,
+      drive = 228,
+      anti = 137,
+      late_start = 53
+  shell:
+      '''
+      cp src/parameters_G.py src/parameters.py && \
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect {wildcards.effect} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      '''
+
+rule G_baseline:
+  message:
+    '''
+    Run simulations without antidote
+    '''
+  output:
+      'out/final/G/drive.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 50,
+      drive = 228,
+  shell:
+      '''
+      cp src/parameters_G.py src/parameters.py && \
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      '''
+
+rule H_scenario:
+  input:
+    expand('out/final/H/{effect}.tsv',
+           effect=[0.3, 0.9, 1])
+
+rule run_H_scenario:
+  message:
+    '''
+    Run final simulations (H scenario)
+    '''
+  output:
+      'out/final/H/{effect}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 50,
+      drive = 228,
+      anti = 137,
+      late_start = 53
+  shell:
+      '''
+      cp src/parameters_H.py src/parameters.py && \
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect {wildcards.effect} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      '''
+
+rule H_baseline:
+  message:
+    '''
+    Run simulations without antidote
+    '''
+  output:
+      'out/final/H/drive.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 50,
+      drive = 228,
+  shell:
+      '''
+      cp src/parameters_H.py src/parameters.py && \
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      '''
+
 rule final:
   input:
     rules.control_scenario.output,
@@ -1351,6 +1489,13 @@ rule final_reduced:
     rules.baseline_reduced.output,
     rules.C_scenario_reduced.input,
     rules.C_scenario_no_fitness_cost_reduced.output,
+
+rule final_GH:
+  input:
+    rules.G_baseline.output,
+    rules.G_scenario.input,
+    rules.H_baseline.output,
+    rules.H_scenario.input,
 
 rule all:
   input:
