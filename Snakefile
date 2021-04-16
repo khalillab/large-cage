@@ -1341,7 +1341,7 @@ rule run_G_scenario:
   params:
       pop_size = 600,
       release = 600,
-      repetitions = 50,
+      repetitions = 10,
       drive = 228,
       anti = 137,
       late_start = 53
@@ -1383,7 +1383,7 @@ rule run_G_baseline:
   params:
       pop_size = 600,
       release = 600,
-      repetitions = 50,
+      repetitions = 10,
       drive = 228,
   shell:
       '''
@@ -1419,7 +1419,7 @@ rule run_H_scenario:
   params:
       pop_size = 600,
       release = 600,
-      repetitions = 50,
+      repetitions = 10,
       drive = 228,
       anti = 137,
       late_start = 53
@@ -1461,7 +1461,7 @@ rule run_H_baseline:
   params:
       pop_size = 600,
       release = 600,
-      repetitions = 50,
+      repetitions = 10,
       drive = 228,
   shell:
       '''
