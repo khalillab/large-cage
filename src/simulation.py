@@ -67,6 +67,18 @@ def get_options():
                         default=agent.HET_ANTIDRIVE_EFFECT,
                         help='Eggs output reduction for het. antidotes '
                              '(default: %(default).2f)')
+    parser.add_argument('--mating-probability',
+                        type=float,
+                        default=agent.MATING_PROBABILITY,
+                        help='Mating probability (default: %(default).2f)')
+    parser.add_argument('--egg-deposition-probability',
+                        type=float,
+                        default=agent.EGG_DEPOSITION_PROBABILITY,
+                        help='Egg deposition probability (default: %(default).2f)')
+    parser.add_argument('--end-time',
+                        type=int,
+                        default=365,
+                        help='End day (default: %(default)d)')
     parser.add_argument('--time-points',
                         default=None,
                         help='Time points for printing simulation status '
@@ -138,6 +150,12 @@ if __name__ == "__main__":
     sys.stderr.write('Changing parameter EGGS_FILTER_STD from its '
                      'default (using the script arguments)\n')
     agent.EGGS_FILTER_STD = options.eggs_filter_std
+    sys.stderr.write('Changing parameter MATING_PROBABILITY from its '
+                     'default (using the script arguments)\n')
+    agent.MATING_PROBABILITY = options.mating_probability
+    sys.stderr.write('Changing parameter EGG_DEPOSITION_PROBABILITY from its '
+                     'default (using the script arguments)\n')
+    agent.EGG_DEPOSITION_PROBABILITY = options.egg_deposition_probability
 
     # should we override the parameters?
     if options.override_parameters:
@@ -237,6 +255,7 @@ if __name__ == "__main__":
             late_releases = (late, late_releases_start, late_releases_counter)
 
         run_simulation(start_populations,
+                       end_time=options.end_time,
                        repetition=j,
                        report_times=time_points,
                        release=agent.RELEASE,
