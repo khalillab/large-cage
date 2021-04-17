@@ -1328,8 +1328,8 @@ rule G_scenario:
   input:
     expand('out/final/G/{mating}-{eggs}-{effect}.tsv',
            effect=[0.3, 0.9, 1],
-           mating=[0.05, 0.1, 0.25, 0.5],
-           eggs=[0.05, 0.1, 0.25, 0.5])
+           mating=[0.05, 0.1, 0.25, 0.5, 0.75, 1],
+           eggs=[0.05, 0.1, 0.25, 0.5, 0.75, 1])
 
 rule run_G_scenario:
   message:
@@ -1370,8 +1370,8 @@ rule run_G_scenario:
 rule G_baseline:
   input:
     expand('out/final/G/baseline/{mating}-{eggs}.tsv',
-           mating=[0.05, 0.1, 0.25, 0.5],
-           eggs=[0.05, 0.1, 0.25, 0.5])
+           mating=[0.05, 0.1, 0.25, 0.5, 0.75, 1],
+           eggs=[0.05, 0.1, 0.25, 0.5, 0.75, 1])
   
 rule run_G_baseline:
   message:
