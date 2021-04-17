@@ -25,9 +25,6 @@ MATING_PROBABILITY = 0.6
 # can females/males mate multiple times?
 MULTIPLE_MATING_FEMALE = False
 MULTIPLE_MATING_MALE = True
-# mating probability antidrive
-ANTI_DRIVE_MATING_HET = MATING_PROBABILITY
-ANTI_DRIVE_MATING_HOM = MATING_PROBABILITY
 # females eggs deposition probability
 EGG_DEPOSITION_PROBABILITY = 0.5
 # lifespan for adults (weibull)
@@ -357,13 +354,7 @@ class Individual():
         return False
 
     def _mating_probability(self):
-        if self.sex == 'f' and ANTI_DRIVE in self.genotype2 and self.genotype1 not in NON_FUNCTIONAL:
-            if self.hom2:
-                return ANTI_DRIVE_MATING_HOM
-            else:
-                return ANTI_DRIVE_MATING_HET
-        else:
-            return MATING_PROBABILITY
+        return MATING_PROBABILITY
 
     def get_mating(self):
         '''Generate the probability that this individual will mate
