@@ -1341,7 +1341,7 @@ rule run_G_scenario:
   params:
       pop_size = 600,
       release = 600,
-      repetitions = 10,
+      repetitions = 25,
       drive = 228,
       anti = 137,
       late_start = 53
@@ -1383,85 +1383,7 @@ rule run_G_baseline:
   params:
       pop_size = 600,
       release = 600,
-      repetitions = 10,
-      drive = 228,
-  shell:
-      '''
-      python3 src/simulation.py \
-          --drive 0 0 0 0 0 0 0 0 \
-                  {params.drive} {params.drive} {params.drive} \
-                  {params.drive} {params.drive} {params.drive} \
-          --antidote 0 0 0 0 0 0 0 0 \
-                     0 0 0 0 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
-                      0 0 0 0 \
-                      0 0 0 0 0 0 \
-          --release {params.release} \
-          --mating-probability {wildcards.mating} \
-          --egg-deposition-probability {wildcards.eggs} \
-	  --repetitions {params.repetitions} > {output}
-      '''
-
-rule H_scenario:
-  input:
-    expand('out/final/H/{mating}-{eggs}-{effect}.tsv',
-           effect=[0.3, 0.9, 1],
-           mating=[0.05, 0.1, 0.25, 0.5],
-           eggs=[0.05, 0.1, 0.25, 0.5])
-
-rule run_H_scenario:
-  message:
-    '''
-    Run final simulations (H scenario)
-    '''
-  output:
-      'out/final/H/{mating}-{eggs}-{effect}.tsv'
-  params:
-      pop_size = 600,
-      release = 600,
-      repetitions = 10,
-      drive = 228,
-      anti = 137,
-      late_start = 53
-  shell:
-      '''
-      python3 src/simulation.py \
-          --drive 0 0 0 0 0 0 0 0 \
-                  {params.drive} {params.drive} {params.drive} \
-                  {params.drive} {params.drive} {params.drive} \
-          --antidote 0 0 0 0 0 0 0 0 \
-                     0 0 0 0 0 0 \
-          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
-                      0 0 0 0 \
-                      0 0 0 0 0 0 \
-          --release {params.release} \
-          --hom-antidote \
-          --het-antidote-effect {wildcards.effect} \
-          --mating-probability {wildcards.mating} \
-          --egg-deposition-probability {wildcards.eggs} \
-          --late-releases -1 \
-          --late-releases-start {params.late_start} \
-          --late-anti {params.anti} \
-	  --repetitions {params.repetitions} > {output}
-      '''
-
-rule H_baseline:
-  input:
-    expand('out/final/H/baseline/{mating}-{eggs}.tsv',
-           mating=[0.05, 0.1, 0.25, 0.5],
-           eggs=[0.05, 0.1, 0.25, 0.5])
-
-rule run_H_baseline:
-  message:
-    '''
-    Run simulations without antidote
-    '''
-  output:
-      'out/final/H/baseline/{mating}-{eggs}.tsv'
-  params:
-      pop_size = 600,
-      release = 600,
-      repetitions = 10,
+      repetitions = 25,
       drive = 228,
   shell:
       '''
@@ -1510,11 +1432,6 @@ rule final_G:
   input:
     rules.G_baseline.input,
     rules.G_scenario.input,
-
-rule final_H:
-  input:
-    rules.H_baseline.input,
-    rules.H_scenario.input,
 
 rule all:
   input:
