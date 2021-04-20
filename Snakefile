@@ -1328,8 +1328,8 @@ rule G_scenario:
   input:
     expand('out/final/G/{mating}-{eggs}-{effect}.tsv',
            effect=[0.3, 0.9, 1],
-           mating=[0.05, 0.1, 0.25, 0.5, 0.75, 1],
-           eggs=[0.05, 0.1, 0.25, 0.5, 0.75, 1])
+           mating=[0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6],
+           eggs=[0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4])
 
 rule run_G_scenario:
   message:
@@ -1344,7 +1344,8 @@ rule run_G_scenario:
       repetitions = 25,
       drive = 228,
       anti = 137,
-      late_start = 53
+      late_start = 53,
+      end_time = 200
   shell:
       '''
       python3 src/simulation.py \
@@ -1364,14 +1365,15 @@ rule run_G_scenario:
           --late-releases -1 \
           --late-releases-start {params.late_start} \
           --late-anti {params.anti} \
+          --end-time {params.end_time} \
 	  --repetitions {params.repetitions} > {output}
       '''
 
 rule G_baseline:
   input:
     expand('out/final/G/baseline/{mating}-{eggs}.tsv',
-           mating=[0.05, 0.1, 0.25, 0.5, 0.75, 1],
-           eggs=[0.05, 0.1, 0.25, 0.5, 0.75, 1])
+           mating=[0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6],
+           eggs=[0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4])
   
 rule run_G_baseline:
   message:
@@ -1385,6 +1387,7 @@ rule run_G_baseline:
       release = 600,
       repetitions = 25,
       drive = 228,
+      end_time = 200
   shell:
       '''
       python3 src/simulation.py \
@@ -1399,6 +1402,7 @@ rule run_G_baseline:
           --release {params.release} \
           --mating-probability {wildcards.mating} \
           --egg-deposition-probability {wildcards.eggs} \
+          --end-time {params.end_time} \
 	  --repetitions {params.repetitions} > {output}
       '''
 
@@ -1416,17 +1420,6 @@ rule final:
     rules.C_scenario_no_fitness_cost.output,
     rules.D_scenario_no_fitness_cost.output,
     rules.E_scenario_no_fitness_cost.output,
-
-rule final_filter:
-  input:
-    rules.C_scenario_filter.input,
-    rules.C_scenario_no_fitness_cost_filter.output,
-
-rule final_reduced:
-  input:
-    rules.baseline_reduced.output,
-    rules.C_scenario_reduced.input,
-    rules.C_scenario_no_fitness_cost_reduced.output,
 
 rule final_G:
   input:
