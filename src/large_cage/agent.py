@@ -104,8 +104,8 @@ LARVAL_NUCL_FROM_FATHER = stats.norm(loc=0.0671,
 LARVAL_NUCL_FROM_BOTH = stats.norm(loc=0.0949,
                                    scale=0.0214)
 # pupal mortality (males)
-PUPAL_M_WT = stats.norm(loc=0.1837,
-                        scale=0.0627)
+PUPAL_M_WT = stats.norm(loc=0.0918,
+                        scale=0.0161)
 PUPAL_M_NUCL_FROM_MOTHER = stats.norm(loc=0.0783,
                                       scale=0.0167)
 PUPAL_M_NUCL_FROM_FATHER = stats.norm(loc=0.0692,
