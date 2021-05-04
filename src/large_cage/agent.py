@@ -662,7 +662,7 @@ def print_status(time, population, output,
                len(output), len([x for x in output if x.sex == 'f'])]
     if pop != 0:
         if len(fpop) == 0:
-            results.append(np.nan)
+            results.append(0.)
         else:
             results.append(len([x for x in fpop
                                 if x.mating and x.deposing_eggs]) / len(fpop))

@@ -1327,9 +1327,9 @@ rule baseline_reduced:
 rule G_scenario:
   input:
     expand('out/final/G/{mating}-{eggs}-{effect}.tsv',
-           effect=[0.3, 0.9, 1],
-           mating=[0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6],
-           eggs=[0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4])
+           effect=[0.3, 0.9],
+           mating=[0.2, 0.3, 0.4, 0.5, 0.6],
+           eggs=[0.05, 0.1, 0.15, 0.2, 0.3, 0.4])
 
 rule run_G_scenario:
   message:
@@ -1344,17 +1344,23 @@ rule run_G_scenario:
       repetitions = 25,
       drive = 228,
       anti = 137,
-      late_start = 53,
-      end_time = 200
+      late_start = 147,
+      end_time = 365
   shell:
       '''
       python3 src/simulation.py \
-          --drive 0 0 0 0 0 0 0 0 \
+          --drive 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 \
                   {params.drive} {params.drive} {params.drive} \
                   {params.drive} {params.drive} {params.drive} \
-          --antidote 0 0 0 0 0 0 0 0 \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 \
                      0 0 0 0 0 0 \
           --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
                       0 0 0 0 \
                       0 0 0 0 0 0 \
           --release {params.release} \
@@ -1372,8 +1378,8 @@ rule run_G_scenario:
 rule G_baseline:
   input:
     expand('out/final/G/baseline/{mating}-{eggs}.tsv',
-           mating=[0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6],
-           eggs=[0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4])
+           mating=[0.2, 0.3, 0.4, 0.5, 0.6],
+           eggs=[0.05, 0.1, 0.15, 0.2, 0.3, 0.4])
   
 rule run_G_baseline:
   message:
@@ -1387,16 +1393,22 @@ rule run_G_baseline:
       release = 600,
       repetitions = 25,
       drive = 228,
-      end_time = 200
+      end_time = 365
   shell:
       '''
       python3 src/simulation.py \
-          --drive 0 0 0 0 0 0 0 0 \
+          --drive 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 \
                   {params.drive} {params.drive} {params.drive} \
                   {params.drive} {params.drive} {params.drive} \
-          --antidote 0 0 0 0 0 0 0 0 \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 \
                      0 0 0 0 0 0 \
           --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
                       0 0 0 0 \
                       0 0 0 0 0 0 \
           --release {params.release} \
