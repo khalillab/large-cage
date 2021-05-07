@@ -86,8 +86,8 @@ if __name__ == '__main__':
     
     with pm.Model() as simulated_cage:
         # here define parameters to estimate
-        a = pm.Uniform('a', lower=0, upper=1)
-        b = pm.Uniform('b', lower=0, upper=1)
+        a = pm.Uniform('a', lower=0.1, upper=0.6)
+        b = pm.Uniform('b', lower=0.05, upper=0.4)
 
         # here define how we run the simulation
         s = pm.Simulator('large-cage',
