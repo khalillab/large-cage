@@ -1327,7 +1327,7 @@ rule baseline_reduced:
 rule G_scenario:
   input:
     expand('out/final/G/{mating}-{eggs}-{effect}.tsv',
-           effect=[0.3, 0.9],
+           effect=[0.3, 0.9, 1],
            mating=[0.2, 0.3, 0.4, 0.5, 0.6],
            eggs=[0.05, 0.1, 0.15, 0.2, 0.3, 0.4])
 
