@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 
+import os
 import sys
 import tempfile
+import random
 import arviz as az
 import numpy as np
 import pymc3 as pm
@@ -17,6 +19,8 @@ def get_options():
 
     parser.add_argument('eggs',
                         help='File with empirical data')
+    parser.add_argument('output',
+                        help='Output directory for individual simulations')
 
     parser.add_argument('--cores',
                         type=int,
@@ -43,13 +47,16 @@ if __name__ == '__main__':
     options = get_options()
 
     # here load actual eggs data
-    edf, data = load_observed(options.eggs)
+    edf, real_data = load_observed(options.eggs)
 
     # here define the simulator function
     # defined here so we can use the actual data
     # to parse the results
-    def large_cage(a, b, edf=edf):
-        tfile = tempfile.NamedTemporaryFile()
+    def large_cage(a, b,
+                   edf=edf, output=options.output,
+                   real_data=real_data):
+        randi = random.randint(1, 100)
+        fname = os.path.join(options.output, f'{randi}_{a}_{b}.tsv')
 
         command = '''python src/simulation.py \
         --drive 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
@@ -68,19 +75,24 @@ if __name__ == '__main__':
         --mating-probability %f \
         --egg-deposition-probability %f \
         --end-time 150 \
-        --repetitions 2 > %s''' % (a, b, tfile.name)
+        --repetitions 2 > %s''' % (a, b, fname)
 
         # run simulation
         subprocess.run(command, shell=True, check=True, stderr=subprocess.DEVNULL)
         
         # read output
-        df = pd.read_csv(tfile.name, sep='\t')
+        df = pd.read_csv(fname, sep='\t')
         # time point 0 is GD release
         df['time'] = df['time'] - df[df['drives'] > 0]['time'].min()
         # select only the days for which we have data
         df = df[df['time'].isin(edf['day'].values)]
         # sort so that it matches the actual data
         data = df.sort_values(['round', 'time'])['eggs'].values
+
+        # catch problems with corner case
+        # return an array with essentially random values
+        if real_data.shape != data.shape:
+            data = np.empty(real_data.shape)
 
         return data
     
@@ -93,7 +105,7 @@ if __name__ == '__main__':
         s = pm.Simulator('large-cage',
                          large_cage, params=(a, b),
                          epsilon=1,
-                         observed=data)
+                         observed=real_data)
 
         # actual sequential MC analysis
         trace, sim_data = pm.sample_smc(kernel='ABC',

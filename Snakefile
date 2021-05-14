@@ -1,3 +1,5 @@
+import numpy as np
+
 POP_SIZE = 400
 REPETITIONS = 50
 DRIVES = [0.25, 0.5]
@@ -1418,6 +1420,68 @@ rule run_G_baseline:
 	  --repetitions {params.repetitions} > {output}
       '''
 
+rule G_parameters:
+  input:
+    expand('out/final/G/parameters/{mating}-{eggs}.tsv',
+           mating=np.linspace(0.1, 0.6, 100),
+           eggs=np.linspace(0.05, 0.4, 100))
+  
+rule G_parameters_eval:
+  input:
+    expand('out/final/G/evaluation/{mating}-{eggs}.tsv',
+           mating=np.linspace(0.1, 0.6, 100),
+           eggs=np.linspace(0.05, 0.4, 100))
+
+rule run_G_parameters:
+  message:
+    '''
+    Run simulations without antidote
+    '''
+  output:
+      'out/final/G/parameters/{mating}-{eggs}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 5,
+      drive = 228,
+      end_time = 130
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --mating-probability {wildcards.mating} \
+          --egg-deposition-probability {wildcards.eggs} \
+          --end-time {params.end_time} \
+	  --repetitions {params.repetitions} > {output}
+      '''
+
+rule eval_G_parameters:
+  message:
+    '''
+    Evaluate parameters
+    '''
+  input:
+      empirical='data/actual_data_2.tsv',
+      simulation='out/final/G/parameters/{mating}-{eggs}.tsv',
+  output:
+      'out/final/G/evaluation/{mating}-{eggs}.tsv'
+  shell:
+      'python src/check_parameters.py {input.empirical} {input.simulation} > {output}'
+
 rule final:
   input:
     rules.control_scenario.output,
@@ -1437,6 +1501,8 @@ rule final_G:
   input:
     rules.G_baseline.input,
     rules.G_scenario.input,
+    rules.G_parameters.input,
+    rules.G_parameters_eval.input,
 
 rule all:
   input:
