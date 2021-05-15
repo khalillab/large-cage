@@ -1326,12 +1326,17 @@ rule baseline_reduced:
           > {output}
       '''
 
+# generate mating-deposition pairs starting from a defined
+# fitness value
+FITNESS = 0.047715
+pairs = [f'{mating}-{FITNESS/mating}'
+         for mating in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]]
+
 rule G_scenario:
   input:
-    expand('out/final/G/{mating}-{eggs}-{effect}.tsv',
+    expand('out/final/G/{pair}-{effect}.tsv',
            effect=[0.3, 0.9, 1],
-           mating=[0.2, 0.3, 0.4, 0.5, 0.6],
-           eggs=[0.05, 0.1, 0.15, 0.2, 0.3, 0.4])
+           pair=pairs)
 
 rule run_G_scenario:
   message:
@@ -1379,10 +1384,9 @@ rule run_G_scenario:
 
 rule G_baseline:
   input:
-    expand('out/final/G/baseline/{mating}-{eggs}.tsv',
-           mating=[0.2, 0.3, 0.4, 0.5, 0.6],
-           eggs=[0.05, 0.1, 0.15, 0.2, 0.3, 0.4])
-  
+    expand('out/final/G/baseline/{pair}.tsv',
+           pair=pairs)
+ 
 rule run_G_baseline:
   message:
     '''
