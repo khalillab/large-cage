@@ -1501,14 +1501,14 @@ rule final:
     rules.D_scenario_no_fitness_cost.output,
     rules.E_scenario_no_fitness_cost.output,
 
-rule final_G:
+rule all:
   input:
     rules.G_baseline.input,
     rules.G_scenario.input,
     rules.G_parameters.input,
     rules.G_parameters_eval.input,
 
-rule all:
+rule all_old:
   input:
     rules.baseline.output,
     rules.simulations.input,
