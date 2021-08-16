@@ -9,31 +9,26 @@ Prerequisites
 * python 3+
 * numpy
 * scipy
+* scikit-learn
 * snakemake
 
 The necessary packages can be installed through `conda`:
 
-    conda create -n large-cage numpy scipy snakemake
-    conda activate large-cage
-
-A version freeze of the conda environment is also provided in the `conda.yaml`
-file and can be used to install the requirements:
-
-    conda env create --file conda.yaml
+    conda create -n large-cage numpy scipy scikit-learn snakemake
     conda activate large-cage
 
 Or through `pip` using the system's python interpreter:
 
-    python3 -m pip install numpy scipy snakemake
+    python3 -m pip install numpy scipy scikit-learn snakemake
 
 Usage
 ----
 
 All analysis can be run using `snakemake`:
 
-    snakemake -p all --cores CPU
+    snakemake -p all --cores CORES
 
-where `CPU` is the number of cores used for parallelization.
+where `CORES` is the number of cores used for parallelization.
 
 A script to run a simulation in which drive and antidote heterozygous males
 are introduced is provided (`src/simulation.py`), and can be run as follows:
@@ -111,11 +106,11 @@ Changing parameters
 
 The default parameters are defined on top of the `src/large_cage/agent.py` file, and can be overriden in two ways:
 
-* From the script launching the simulation (see the `src/simulation.py` for an example, only a few parameters)
-* By changing the `parameters.py` file and using the `--override-parameters` option of the `src/simulation.py` script
+* From the script launching the simulation (see the help message of the `src/simulation.py` script for examples, only a few parameters)
+* By changing the `src/parameters.py.bak` file, renaming it to `src/parameters.py` and using the `--override-parameters` option of the `src/simulation.py` script
 
 It is NOT advisable to change the parameters inside the
 `src/large_cage/agent.py` file manually, unless the changes
 are being committed to version control.
 Also note that if the `--override-parameters` option is used, then the parameters written in the `src/parameters.py` file have priority over
-those provided in the command line.
+those provided via the command line.
