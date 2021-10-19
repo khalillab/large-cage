@@ -18,8 +18,8 @@ RELEASE = 400
 # how many simulations to run
 REPETITIONS = 100
 # fitness effect of the antidrive (on number of eggs)
-HOM_ANTIDRIVE_EFFECT = 0.15
-HET_ANTIDRIVE_EFFECT = 0.3
+HOM_ANTIDRIVE_EFFECT = 1
+HET_ANTIDRIVE_EFFECT = 1
 # females mating probability
 MATING_PROBABILITY = 0.6
 # can females/males mate multiple times?
