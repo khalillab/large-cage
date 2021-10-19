@@ -1382,6 +1382,57 @@ rule run_G_scenario:
 	  --repetitions {params.repetitions} > {output}
       '''
 
+rule G_alt_scenario:
+  input:
+    expand('out/final/G_alt/{pair}-{effect}.tsv',
+           effect=[1],
+           pair=pairs)
+
+rule run_G_alt_scenario:
+  message:
+    '''
+    Run final simulations (G scenario)
+    '''
+  output:
+      'out/final/G_alt/{mating}-{eggs}-{effect}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 25,
+      drive = 228,
+      anti = 137,
+      anti_releases = 24,
+      late_start = 147,
+      end_time = 365
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect {wildcards.effect} \
+          --mating-probability {wildcards.mating} \
+          --egg-deposition-probability {wildcards.eggs} \
+          --late-releases {params.anti_releases} \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --end-time {params.end_time} \
+	  --repetitions {params.repetitions} > {output}
+      '''
+
 rule G_baseline:
   input:
     expand('out/final/G/baseline/{pair}.tsv',
@@ -1505,11 +1556,10 @@ rule all:
   input:
     rules.G_baseline.input,
     rules.G_scenario.input,
+    rules.G_alt_scenario.input,
 
 rule all_parameters:
   input:
-    rules.G_baseline.input,
-    rules.G_scenario.input,
     rules.G_parameters.input,
     rules.G_parameters_eval.input,
 
