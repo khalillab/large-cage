@@ -790,7 +790,7 @@ def run_simulation(start_populations,
     additional_releases_counter = 0
 
     while len(population) > 0 and total_time < end_time:
-        initial_population = False
+        restocking = False
         total_time += time_step
         total_time = round(total_time, 1)
         if total_time == 0:
@@ -836,6 +836,7 @@ def run_simulation(start_populations,
         
         # feeding/harvesting/release day
         if day % 1 == 0 and int(day) in release_days:
+            restocking = True
             # collect the previous round of eggs
             if len(previous_eggs) > 0:
                 eggs_nursery = eggs_nursery.union(previous_eggs)
@@ -844,7 +845,6 @@ def run_simulation(start_populations,
 
             # add further start populations
             if len(start_populations) > 0 and total_time > 1:
-                initial_population = True
                 for indv in start_populations.pop():
                     population.add(indv)
 
@@ -889,5 +889,5 @@ def run_simulation(start_populations,
         if ((len(report_times) == 0 and not round(total_time, 2) % 1) or
             round(total_time, 2) in report_times):
             print_status(total_time, population, larvae + pupae,
-                         initial_population,
+                         restocking,
                          latest_eggs, repetition)
