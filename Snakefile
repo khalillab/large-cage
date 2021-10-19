@@ -1330,12 +1330,12 @@ rule baseline_reduced:
 # fitness value
 FITNESS = 0.047715
 pairs = [f'{mating}-{FITNESS/mating}'
-         for mating in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]]
+         for mating in [0.2]]
 
 rule G_scenario:
   input:
     expand('out/final/G/{pair}-{effect}.tsv',
-           effect=[0.3, 0.9, 1],
+           effect=[1],
            pair=pairs)
 
 rule run_G_scenario:
@@ -1502,6 +1502,11 @@ rule final:
     rules.E_scenario_no_fitness_cost.output,
 
 rule all:
+  input:
+    rules.G_baseline.input,
+    rules.G_scenario.input,
+
+rule all_parameters:
   input:
     rules.G_baseline.input,
     rules.G_scenario.input,
