@@ -261,4 +261,6 @@ if __name__ == "__main__":
                        release=agent.RELEASE,
                        special_releases=special_releases,
                        additional_releases=late_releases,
-                       eggs_filter=eggs_filter)
+                       eggs_filter=eggs_filter,
+                       time_step=agent.TIME_STEP,
+                       release_days=agent.RELEASE_DAYS)

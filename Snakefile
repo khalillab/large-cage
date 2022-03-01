@@ -1537,6 +1537,101 @@ rule eval_G_parameters:
   shell:
       'python src/check_parameters.py {input.empirical} {input.simulation} > {output}'
 
+rule bugdorm_scenario:
+  message:
+    '''
+    Run final simulations (bugdorm scenario)
+    '''
+  output:
+      'out/final/bugdorm/antidote.tsv'
+  params:
+      pop_size = 400,
+      release = 150,
+      repetitions = 25,
+      drive = 111,
+      anti = 66,
+      late_start = 42,
+      end_time = 365
+  shell:
+      '''
+      cp src/parameters_bugdorm.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 \
+                     0 0 0 \
+          --wild-type {params.pop_size} 0 0 \
+                      0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect 1 \
+          --mating-probability 0.2 \
+          --egg-deposition-probability 0.23857499999999998 \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --end-time {params.end_time} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      '''
+
+rule bugdorm_baseline_scenario:
+  message:
+    '''
+    Run final simulations (bugdorm scenario)
+    '''
+  output:
+      'out/final/bugdorm/baseline.tsv'
+  params:
+      pop_size = 400,
+      release = 150,
+      repetitions = 25,
+      drive=111,
+  shell:
+      '''
+      cp src/parameters_bugdorm.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 \
+                     0 0 0 \
+          --wild-type {params.pop_size} 0 0 \
+                      0 0 0 \
+          --release {params.release} \
+          --mating-probability 0.2 \
+          --egg-deposition-probability 0.23857499999999998 \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      '''
+
+rule bugdorm_wt_scenario:
+  message:
+    '''
+    Run final simulations (bugdorm scenario)
+    '''
+  output:
+      'out/final/bugdorm/wt.tsv'
+  params:
+      pop_size = 400,
+      release = 150,
+      repetitions = 25,
+  shell:
+      '''
+      cp src/parameters_bugdorm.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 \
+          --antidote 0 0 0 \
+          --wild-type {params.pop_size} 0 0 \
+          --release {params.release} \
+          --mating-probability 0.2 \
+          --egg-deposition-probability 0.23857499999999998 \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      '''
+
 rule final:
   input:
     rules.control_scenario.output,

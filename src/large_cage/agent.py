@@ -829,7 +829,7 @@ def run_simulation(start_populations,
         #  Select the larvae from previous harvests
         if len(eggs_nursery) > 0:
             larvae = [x for x in eggs_nursery if x.stage == 'larva']
-            pupae = [x for x in eggs_nursery if x.stage == 'pupa']
+            pupae = [x for x in eggs_nursery if x.stage == 'pupa' or x.stage == 'adult']
         else:
             larvae = []
             pupae = []
