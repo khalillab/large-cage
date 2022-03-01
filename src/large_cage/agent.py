@@ -501,8 +501,8 @@ class Individual():
 
 
 def mate_all(population,
-             multiple_mating_female=MULTIPLE_MATING_FEMALE,
-             multiple_mating_male=MULTIPLE_MATING_MALE):
+             multiple_mating_female=None,
+             multiple_mating_male=None):
     '''Randomly mate all adults that can mate
 
     Args:
@@ -517,6 +517,10 @@ def mate_all(population,
         eggs (set)
             An iterable of offsprings (Individual objects)
     '''
+    if multiple_mating_female is None:
+        multiple_mating_female=MULTIPLE_MATING_FEMALE
+    if multiple_mating_male is None:
+        multiple_mating_male=MULTIPLE_MATING_MALE
     eggs = set()
     males = [x for x in population
                 if x.sex == 'm'
@@ -538,8 +542,8 @@ def mate_all(population,
 
 
 def mate(m, f,
-         multiple_mating_female=MULTIPLE_MATING_FEMALE,
-         multiple_mating_male=MULTIPLE_MATING_MALE):
+         multiple_mating_female=None,
+         multiple_mating_male=None):
     '''Mate a female with a male, if conditions are right
     
     Args:
@@ -556,6 +560,10 @@ def mate(m, f,
         eggs (set)
             An iterable of offsprings (Individual objects)
     '''
+    if multiple_mating_female is None:
+        multiple_mating_female=MULTIPLE_MATING_FEMALE
+    if multiple_mating_male is None:
+        multiple_mating_male=MULTIPLE_MATING_MALE
     if f.sex == m.sex:
         raise RuntimeError('Cannot mate')
 
@@ -723,9 +731,9 @@ def print_status(time, population, output,
 
 def run_simulation(start_populations,
                    repetition=0, end_time=365,
-                   time_step=TIME_STEP, release=RELEASE,
+                   time_step=None, release=None,
                    special_releases=None,
-                   report_times=None, release_days=RELEASE_DAYS,
+                   report_times=None, release_days=None,
                    additional_releases=None,
                    eggs_filter=None):
     '''Run a full large-cage simulation given a series of start populations
@@ -762,6 +770,12 @@ def run_simulation(start_populations,
             Trim the eggs output, according to a desired normal distribution
             First element is the loc parameter, second is the scale.
     '''
+    if time_step is None:
+        time_step=TIME_STEP
+    if release is None:
+        release=RELEASE
+    if release_days is None:
+        release_days=RELEASE_DAYS
     if report_times is None:
         report_times = []
     if special_releases is None:
@@ -882,7 +896,7 @@ def run_simulation(start_populations,
                     release_pupae = pupae[:release]
                 population = population.union(release_pupae)
                 # remove eggs from nursery
-                for p in pupae:
+                for p in release_pupae:
                     eggs_nursery.remove(p)
                 eggs_hatched = True
 
