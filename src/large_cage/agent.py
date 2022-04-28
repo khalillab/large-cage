@@ -32,6 +32,8 @@ EGG_DEPOSITION_PROBABILITY = 0.5
 SURVIVAL = stats.weibull_min(c=2.2472084592310644,
                              scale=6.213064151445494,
                              loc=0.7275226197070571)
+SURVIVAL_MALE = SURVIVAL
+SURVIVAL_FEMALE = SURVIVAL
 # times from egg to full adult
 # time 0 is egg deposition
 # timer is reset once adult stage is reached
@@ -219,7 +221,10 @@ class Individual():
         self.time_to_pupa = random.uniform(TIME_TO_PUPA[0], TIME_TO_PUPA[1])
         self.time_to_maturation = random.uniform(TIME_TO_MATURATION[0], TIME_TO_MATURATION[1])
         # lifespan after full maturation
-        self.death = SURVIVAL.rvs()
+        if self.sex == 'm':
+            self.death = SURVIVAL_MALE.rvs()
+        else:
+            self.death = SURVIVAL_FEMALE.rvs()
         # egg -> larva -> pupa -> adult
         self.stage = 'egg'
 
