@@ -1572,8 +1572,9 @@ rule bugdorm_scenario:
           --late-anti {params.anti} \
           --end-time {params.end_time} \
           --override-parameters \
-	  --repetitions {params.repetitions} > {output}
+	        --repetitions {params.repetitions} > {output}
       rm src/parameters.py
+      rm -rf src/__pycache__
       '''
 
 rule bugdorm_baseline_scenario:
@@ -1602,8 +1603,9 @@ rule bugdorm_baseline_scenario:
           --mating-probability 0.2 \
           --egg-deposition-probability 0.23857499999999998 \
           --override-parameters \
-	  --repetitions {params.repetitions} > {output}
+          --repetitions {params.repetitions} > {output}
       rm src/parameters.py
+      rm -rf src/__pycache__
       '''
 
 rule bugdorm_wt_scenario:
@@ -1628,8 +1630,9 @@ rule bugdorm_wt_scenario:
           --mating-probability 0.2 \
           --egg-deposition-probability 0.23857499999999998 \
           --override-parameters \
-	  --repetitions {params.repetitions} > {output}
+          --repetitions {params.repetitions} > {output}
       rm src/parameters.py
+      rm -rf src/__pycache__
       '''
 
 rule final:
