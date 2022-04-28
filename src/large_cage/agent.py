@@ -740,7 +740,8 @@ def run_simulation(start_populations,
                    special_releases=None,
                    report_times=None, release_days=None,
                    additional_releases=None,
-                   eggs_filter=None):
+                   eggs_filter=None,
+                   use_adults_if_needed=False):
     '''Run a full large-cage simulation given a series of start populations
     
     Args:
@@ -774,6 +775,9 @@ def run_simulation(start_populations,
         eggs_filter (tuple)
             Trim the eggs output, according to a desired normal distribution
             First element is the loc parameter, second is the scale.
+        use_adults_if_needed (bool)
+            If there are no pupae in the egg nursery, use adults
+            (can be necessary if there is a single release)
     '''
     if time_step is None:
         time_step=TIME_STEP
@@ -849,6 +853,9 @@ def run_simulation(start_populations,
         if len(eggs_nursery) > 0:
             larvae = [x for x in eggs_nursery if x.stage == 'larva']
             pupae = [x for x in eggs_nursery if x.stage == 'pupa']
+            if len(pupae) == 0 and use_adults_if_needed:
+                # could happen if there is a single release day
+                pupae = [x for x in eggs_nursery if x.stage == 'adult']
         else:
             larvae = []
             pupae = []

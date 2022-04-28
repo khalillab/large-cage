@@ -75,6 +75,11 @@ def get_options():
                         type=float,
                         default=agent.EGG_DEPOSITION_PROBABILITY,
                         help='Egg deposition probability (default: %(default).2f)')
+    parser.add_argument('--use-adults',
+                        default=False,
+                        action='store_true',
+                        help='Use adults if no pupae are available '
+                             '(useful for single releases, default: pupae only)')
     parser.add_argument('--end-time',
                         type=int,
                         default=365,
@@ -263,4 +268,5 @@ if __name__ == "__main__":
                        additional_releases=late_releases,
                        eggs_filter=eggs_filter,
                        time_step=agent.TIME_STEP,
-                       release_days=agent.RELEASE_DAYS)
+                       release_days=agent.RELEASE_DAYS,
+                       use_adults_if_needed=options.use_adults)
