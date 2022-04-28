@@ -1651,7 +1651,12 @@ rule all:
   input:
     rules.G_baseline.input,
     rules.G_scenario.input,
-    rules.G_alt_scenario.input,
+    
+rule bugdorm:
+  input:
+    rules.bugdorm_wt_scenario.output,
+    rules.bugdorm_baseline_scenario.output,
+    rules.bugdorm_scenario.output,
 
 rule all_parameters:
   input:
