@@ -1505,6 +1505,140 @@ rule run_G_baseline:
 	  --repetitions {params.repetitions} > {output}
       '''
 
+rule G2_scenario_WT:
+  input:
+    expand('out/final/G2/WT/{pair}.tsv',
+           pair=pairs)
+
+rule run_G2_scenario_WT:
+  message:
+    '''
+    Run final simulations (G2 scenario, WT)
+    '''
+  output:
+      'out/final/G2/WT/{mating}-{eggs}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 25,
+      end_time = 500
+  shell:
+      '''
+      cp src/parameters_G2.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 0 \
+          --antidote 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+          --release {params.release} \
+          --mating-probability {wildcards.mating} \
+          --egg-deposition-probability {wildcards.eggs} \
+          --end-time {params.end_time} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
+rule G2_scenario:
+  input:
+    expand('out/final/G2/{pair}-{effect}.tsv',
+           effect=[1],
+           pair=pairs)
+
+rule run_G2_scenario:
+  message:
+    '''
+    Run final simulations (G2 scenario)
+    '''
+  output:
+      'out/final/G2/{mating}-{eggs}-{effect}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 25,
+      drive = 228,
+      anti = 137,
+      late_start = 147,
+      end_time = 500
+  shell:
+      '''
+      cp src/parameters_G2.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect {wildcards.effect} \
+          --mating-probability {wildcards.mating} \
+          --egg-deposition-probability {wildcards.eggs} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --end-time {params.end_time} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
+rule G2_baseline:
+  input:
+    expand('out/final/G2/baseline/{pair}.tsv',
+           pair=pairs)
+ 
+rule run_G2_baseline:
+  message:
+    '''
+    Run simulations without antidote
+    '''
+  output:
+      'out/final/G2/baseline/{mating}-{eggs}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 25,
+      drive = 228,
+      end_time = 500
+  shell:
+      '''
+      cp src/parameters_G2.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --mating-probability {wildcards.mating} \
+          --egg-deposition-probability {wildcards.eggs} \
+          --end-time {params.end_time} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
 rule G_parameters:
   input:
     expand('out/final/G/parameters/{mating}-{eggs}.tsv',
@@ -1688,6 +1822,12 @@ rule all:
     rules.G_baseline.input,
     rules.G_scenario.input,
     rules.G_scenario_WT.input,
+
+rule all2:
+  input:
+    rules.G2_baseline.input,
+    rules.G2_scenario.input,
+    rules.G2_scenario_WT.input,
     
 rule bugdorm:
   input:
