@@ -330,6 +330,12 @@ class Individual():
         # initial mating probability 
         self.mating = self.get_mating()
 
+        # will deposit eggs?
+        # with own genotype modifier
+        # when mating will recompute with interacting genotypes
+        # we keep this to keep track of population fitness
+        self.deposing_eggs = self.deposes_eggs(self.get_deposition_mod())
+
         # egg production
         if self.sex == 'f' and self.genotype1 not in NON_FUNCTIONAL:
             if DRIVE not in self.genotype1:
@@ -850,7 +856,7 @@ def print_status(time, population, output,
             results.append(0.)
         else:
             results.append(len([x for x in fpop
-                                if x.mating]) / len(fpop))
+                                if x.mating and x.deposing_eggs]) / len(fpop))
         results.append(len([x for x in population
                             if x.genotype1 == {WILD_TYPE, }
                             and x.genotype2 == {WILD_TYPE, }]) / pop)
