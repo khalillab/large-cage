@@ -1348,7 +1348,7 @@ rule run_G_scenario_WT:
       pop_size = 600,
       release = 600,
       repetitions = 25,
-      end_time = 150
+      end_time = 500
   shell:
       '''
       python3 src/simulation.py \
@@ -1382,7 +1382,7 @@ rule run_G_scenario:
       drive = 228,
       anti = 137,
       late_start = 147,
-      end_time = 365
+      end_time = 500
   shell:
       '''
       python3 src/simulation.py \
@@ -1480,7 +1480,7 @@ rule run_G_baseline:
       release = 600,
       repetitions = 25,
       drive = 228,
-      end_time = 365
+      end_time = 500
   shell:
       '''
       python3 src/simulation.py \
