@@ -1332,6 +1332,36 @@ FITNESS = 0.047715
 pairs = [f'{mating}-{FITNESS/mating}'
          for mating in [0.2]]
 
+rule G_scenario_WT:
+  input:
+    expand('out/final/G/WT/{pair}.tsv',
+           pair=pairs)
+
+rule run_G_scenario_WT:
+  message:
+    '''
+    Run final simulations (G scenario, WT)
+    '''
+  output:
+      'out/final/G/WT/{mating}-{eggs}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 25,
+      end_time = 150
+  shell:
+      '''
+      python3 src/simulation.py \
+          --drive 0 0 0 0 \
+          --antidote 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+          --release {params.release} \
+          --mating-probability {wildcards.mating} \
+          --egg-deposition-probability {wildcards.eggs} \
+          --end-time {params.end_time} \
+	  --repetitions {params.repetitions} > {output}
+      '''
+
 rule G_scenario:
   input:
     expand('out/final/G/{pair}-{effect}.tsv',
@@ -1657,6 +1687,7 @@ rule all:
   input:
     rules.G_baseline.input,
     rules.G_scenario.input,
+    rules.G_scenario_WT.input,
     
 rule bugdorm:
   input:
