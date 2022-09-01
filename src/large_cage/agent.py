@@ -22,11 +22,41 @@ HOM_ANTIDRIVE_EFFECT = 1
 HET_ANTIDRIVE_EFFECT = 1
 # females mating probability
 MATING_PROBABILITY = 0.6
+# males mating probability
+MATING_PROBABILITY_MALE = 1
+# genotype modifiers for mating probability
+MATING_MOD = {
+'f': {'DWAA': 0.64,
+     'DWAW': 0.64,
+     'DWWW': 0.13,
+     'RWAW': 1.19,
+     'WWAW': 1.19},
+'m': {'DDAA': 0.69,
+     'DDAW': 1.06,
+     'DDWW': 0.86,
+     'DRAA': 0.69,
+     'DRAW': 1.06,
+     'DRWW': 0.86,
+     'DWAA': 0.69,
+     'DWAW': 1.06,
+     'DWWW': 0.86,
+     'RRAA': 0.69,
+     'RRAW': 0.94,
+     'RWAA': 0.69,
+     'RWAW': 0.94,
+     'WWAA': 0.69,
+     'WWAW': 0.94}
+}
 # can females/males mate multiple times?
 MULTIPLE_MATING_FEMALE = False
 MULTIPLE_MATING_MALE = True
 # females eggs deposition probability
 EGG_DEPOSITION_PROBABILITY = 0.5
+# genotype modifiers for deposition probability
+DEPOSITION_MOD = {
+'m': {},
+'f': {}
+}
 # lifespan for adults (weibull)
 # a random variable is derived from this distribution
 SURVIVAL = stats.weibull_min(c=2.2472084592310644,
@@ -67,60 +97,120 @@ NON_FUNCTIONAL = [
 # has been inherited
 #
 # homing efficiency
-DRIVE_EFFICIENCY_NUCL_FROM_FATHER = stats.norm(loc=0.9867,
-                                               scale=0.0163)
-DRIVE_EFFICIENCY_NUCL_FROM_MOTHER = stats.norm(loc=0.9667,
-                                               scale=0.0408)
-DRIVE_EFFICIENCY_NUCL_FROM_BOTH = 1.
+DRIVE_EFFICIENCY_FEMALE = stats.norm(loc=0.9867,
+                                     scale=0.0163)
+DRIVE_EFFICIENCY_MALE = stats.norm(loc=0.9667,
+                                   scale=0.0408)
 # antidote efficiency
-ANTI_DRIVE_EFFICIENCY = {'f': 1.,
-                         'm': 1.}
+DRIVE_EFFICIENCY_MOD = {
+'f': {'DRAA': 0.5,
+     'DRAW': 0.5,
+     'DRWW': 0.5,
+     'DWAA': 0.55,
+     'DWAW': 0.55},
+'m': {'DRAA': 0.5,
+     'DRAW': 0.5,
+     'DRWW': 0.5,
+     'DWAA': 0.52,
+     'DWAW': 0.52}
+}
+# antidote inheritance
+ANTIDOTE_INHERITANCE = {
+'f': {'DDAW': 0.52,
+     'DRAW': 0.52,
+     'DWAW': 0.52,
+     'RRAW': 0.52,
+     'RWAW': 0.52,
+     'WWAW': 0.52},
+'m': {'DDAW': 0.48,
+     'DRAW': 0.48,
+     'DWAW': 0.51,
+     'RRAW': 0.48,
+     'RWAW': 0.48,
+     'WWAW': 0.48}
+}
 # emergence of resistant allele (if drive fails)
 RESISTANCE_EFFICIENCY = {'f': 0.4685,
                          'm': 0.4685}
 # number of eggs
 EGGS_WT = stats.norm(loc=137.4,
                      scale=34.5)
-EGGS_NUCL_FROM_MOTHER = stats.norm(loc=118.96,
-                                   scale=34.5)
-EGGS_NUCL_FROM_FATHER = stats.norm(loc=59.67,
-                                   scale=50.6)
-EGGS_NUCL_FROM_BOTH = stats.norm(loc=59.67,
-                                 scale=50.6)
+EGGS_NUCL_FROM_MOTHER = EGGS_WT
+EGGS_NUCL_FROM_FATHER = EGGS_WT
+EGGS_NUCL_FROM_BOTH = EGGS_WT
+# genotype modifiers for number of eggs
+EGGS_MOD = {
+'f': {'DWAA': 0.96,
+     'DWAW': 0.96,
+     'DWWW': 0.65,
+     'RWAA': 1.08,
+     'RWAW': 1.15,
+     'WWAA': 1.08,
+     'WWAW': 1.15},
+'m': {'DDAA': 1.07,
+     'DDAW': 1.07,
+     'DDWW': 1.1,
+     'DRAA': 1.07,
+     'DRAW': 1.07,
+     'DRWW': 1.1,
+     'DWAA': 1.07,
+     'DWAW': 1.07,
+     'DWWW': 1.1,
+     'RRAA': 1.25,
+     'RRAW': 1.35,
+     'RWAA': 1.25,
+     'RWAW': 1.35,
+     'WWAA': 1.25,
+     'WWAW': 1.35}
+}
 # eggs hatching probability
 HATCHING_WT = stats.norm(loc=0.8667,
                          scale=0.0046)
-HATCHING_NUCL_FROM_MOTHER = stats.norm(loc=0.5313,
-                                       scale=0.0168)
-HATCHING_NUCL_FROM_FATHER = stats.norm(loc=0.8725,
-                                       scale=0.0159)
-HATCHING_NUCL_FROM_BOTH = stats.norm(loc=0.5094,
-                                     scale=0.0553)
+HATCHING_NUCL_FROM_MOTHER = HATCHING_WT
+HATCHING_NUCL_FROM_FATHER = HATCHING_WT
+HATCHING_NUCL_FROM_BOTH = HATCHING_WT
+# genotype modifiers for hatching rate
+HATCHING_MOD = {
+'f': {'DWAA': 0.81,
+     'DWAW': 0.81,
+     'DWWW': 0.62,
+     'RWAA': 1.15,
+     'RWAW': 1.05,
+     'WWAA': 1.15,
+     'WWAW': 1.05},
+'m': {'DDAA': 1.1,
+     'DDAW': 1.1,
+     'DDWW': 1.06,
+     'DRAA': 1.1,
+     'DRAW': 1.1,
+     'DRWW': 1.06,
+     'DWAA': 1.1,
+     'DWAW': 1.1,
+     'DWWW': 1.06,
+     'RRAA': 1.05,
+     'RRAW': 1.1,
+     'RWAA': 1.05,
+     'RWAW': 1.1,
+     'WWAA': 1.05,
+     'WWAW': 1.1}
+}
 # larval mortality 
 LARVAL_WT = stats.norm(loc=0.0825,
                        scale=0.0214)
-LARVAL_NUCL_FROM_MOTHER = stats.norm(loc=0.1019,
-                                     scale=0.0168)
-LARVAL_NUCL_FROM_FATHER = stats.norm(loc=0.0671,
-                                     scale=0.0146)
-LARVAL_NUCL_FROM_BOTH = stats.norm(loc=0.0949,
-                                   scale=0.0214)
+LARVAL_NUCL_FROM_MOTHER = LARVAL_WT
+LARVAL_NUCL_FROM_FATHER = LARVAL_WT
+LARVAL_NUCL_FROM_BOTH = LARVAL_WT
 # pupal mortality (males)
 PUPAL_M_WT = stats.norm(loc=0.0918,
                         scale=0.0161)
-PUPAL_M_NUCL_FROM_MOTHER = stats.norm(loc=0.0783,
-                                      scale=0.0167)
-PUPAL_M_NUCL_FROM_FATHER = stats.norm(loc=0.0692,
-                                      scale=0.0233)
-PUPAL_M_NUCL_FROM_BOTH = stats.norm(loc=0.0796,
-                                    scale=0.0182)
+PUPAL_M_NUCL_FROM_MOTHER = PUPAL_M_WT
+PUPAL_M_NUCL_FROM_FATHER = PUPAL_M_WT
+PUPAL_M_NUCL_FROM_BOTH = PUPAL_M_WT
 # pupal mortality (females)
 PUPAL_F_WT = stats.norm(loc=0.0918,
                         scale=0.0161)
-PUPAL_F_NUCL_FROM_MOTHER = stats.norm(loc=0.0503,
-                                      scale=0.0121)
-PUPAL_F_NUCL_FROM_FATHER = stats.norm(loc=0.0676,
-                                      scale=0.0223)
+PUPAL_F_NUCL_FROM_MOTHER = PUPAL_F_WT
+PUPAL_F_NUCL_FROM_FATHER = PUPAL_F_WT
 # is this individual intersex?
 # (means that it does not mate)
 # requires presence of the drive in locus 1
@@ -143,7 +233,7 @@ class Individual():
     Individuals are in the egg stage upon object creation,
     and the time to reach each stage is predetermined by drawing
     random variables from predefined distributions
-    
+
     Mating, egg deposition probabilities, number of eggs produced
     and similar quantities are also drawn from predefined distributions
 
@@ -185,7 +275,8 @@ class Individual():
     W
     '''
     def __init__(self, sex, genotype1, genotype2,
-                 nucl_from_father=False, nucl_from_mother=False):
+                 nucl_from_father=False, nucl_from_mother=False,
+                 hatching_mod=1):
         '''Create a new individual for the simulation
         Starts from the egg stage
 
@@ -200,6 +291,8 @@ class Individual():
                 Wether the father passes the nuclease to the egg
             nucl_from_mother (bool)
                 Wether the mother passes the nuclease to the egg
+            hatching_mod (float)
+                Modifier for the hatching probability
         '''
         self.sex = sex
         self.nucl_from_father = nucl_from_father
@@ -233,13 +326,10 @@ class Individual():
 
         # is this individual intersex
         self.intersex = self._is_intersex()
-        
+
         # initial mating probability 
         self.mating = self.get_mating()
 
-        # will deposit eggs?
-        self.deposing_eggs = self._eggs_deposition()
-        
         # egg production
         if self.sex == 'f' and self.genotype1 not in NON_FUNCTIONAL:
             if DRIVE not in self.genotype1:
@@ -271,6 +361,8 @@ class Individual():
             hatching = HATCHING_NUCL_FROM_MOTHER.rvs()
         else:
             raise RuntimeError(self.genotype1, nucl_from_father, nucl_from_mother)
+        # apply modifier for hatching probability
+        hatching = hatching * hatching_mod
         if random.random() < hatching:
             self.hatching = True
         else:
@@ -359,11 +451,12 @@ class Individual():
         return False
 
     def _mating_probability(self):
-        return MATING_PROBABILITY
+        return MATING_PROBABILITY_MALE * MATING_MOD[self.sex
+                ].get(self.get_genotype(), 1)
 
     def get_mating(self):
         '''Generate the probability that this individual will mate
-        
+
         Returns
             mating (bool)
                Wether the individual will mate
@@ -372,9 +465,7 @@ class Individual():
         '''
         if self.intersex:
             return False
-        if self.sex == 'm':
-            return True
-        if self.genotype1 in NON_FUNCTIONAL:
+        if self.sex == 'f' and self.genotype1 in NON_FUNCTIONAL:
             return False
         else:
             prob = self._mating_probability()
@@ -383,13 +474,25 @@ class Individual():
             else:
                 return False
 
-    def _eggs_deposition(self):
+    def deposes_eggs(self, modifier):
+        '''Generate the probability that this individual will depose eggs
+
+        Args:
+            modifier (float)
+               Modifier for the eggs deposition modifier
+
+        Returns
+            deposes (bool)
+               Wether the individual will depose eggs
+
+        The decision is based on sex and modifier
+        '''
         if self.sex == 'm':
             return None
-        elif random.random() <= EGG_DEPOSITION_PROBABILITY:
+        elif random.random() <= EGG_DEPOSITION_PROBABILITY * modifier:
             return True
         return False
-    
+
     def change_age(self, time_step):
         '''Increase the age of the individual
 
@@ -410,7 +513,7 @@ class Individual():
 
     def will_develop(self):
         '''Will this individual develop into an adult?
-        
+
         Returns:
            will_develop (bool)
                Wether the individual will eventually develop into an adult
@@ -426,7 +529,7 @@ class Individual():
         '''Is this individual still alive?
 
         Based on age, stage and development probabilities
-        
+
         Returns:
            is_alive (bool)
                Wether the individual is still alive
@@ -450,7 +553,7 @@ class Individual():
 
     def form_gamete1(self, ):
         '''Form a gamete for locus 1 (dsx)
-        
+
         If het. DRIVE homing may happen;
         the genotype at locus 2 may block homing
 
@@ -469,28 +572,35 @@ class Individual():
         else:
             # anti-drive present?
             if ANTI_DRIVE in self.genotype2:
-                if random.random() <= ANTI_DRIVE_EFFICIENCY[self.sex]:
-                    return self._mendelian(self.genotype1)
+                if random.random() <= 1 - DRIVE_EFFICIENCY_MOD[self.sex
+                        ].get(self.get_genotype(), 1):
+                    return DRIVE
+                else:
+                    # return the other allele
+                    try:
+                        return sorted(set(self.genotype1).difference((DRIVE,)))[0]
+                    except Exception as e:
+                        raise RuntimeError(self.genotype1, self.genotype2, str(e))
             # supermendelian
-            if self.nucl_from_father and self.nucl_from_mother:
-                if random.random() <= DRIVE_EFFICIENCY_NUCL_FROM_BOTH:
+            if self.sex == 'm':
+                if random.random() <= DRIVE_EFFICIENCY_MALE.rvs():
                     return DRIVE
-            elif self.nucl_from_father:
-                if random.random() <= DRIVE_EFFICIENCY_NUCL_FROM_FATHER.rvs():
-                    return DRIVE
-            elif self.nucl_from_mother:
-                if random.random() <= DRIVE_EFFICIENCY_NUCL_FROM_MOTHER.rvs():
+            else:
+                if random.random() <= DRIVE_EFFICIENCY_FEMALE.rvs():
                     return DRIVE
             # resistance
             # TODO: could have functional resistance here too?
             if random.random() < RESISTANCE_EFFICIENCY[self.sex]:
                 return RESISTANCE
-            # regular mendelian inheritance
-            return self._mendelian(self.genotype1)
+            # return the other allele
+            try:
+                return sorted(set(self.genotype1).difference((DRIVE,)))[0]
+            except Exception as e:
+                raise RuntimeError(self.genotype1, self.genotype2, str(e))
 
     def form_gamete2(self):
         '''Form a gamete for locus 2 (antidote)
-        
+
         Returns:
             genotype (str)
                 Genotype at locus 2 for this gamete
@@ -502,7 +612,58 @@ class Individual():
         if self.hom2:
             return tuple(self.genotype2)[0]
         else:
+            # anti-drive present?
+            if ANTI_DRIVE in self.genotype2:
+                if random.random() <= ANTIDOTE_INHERITANCE[self.sex
+                        ].get(self.get_genotype(), 1):
+                    return ANTI_DRIVE
+                else:
+                    # return the other allele
+                    try:
+                        return sorted(set(self.genotype1).difference((ANTI_DRIVE,)))[0]
+                    except Exception as e:
+                        raise RuntimeError(self.genotype1, self.genotype2, str(e))
+            # simple mendelian
             return self._mendelian(self.genotype2)
+
+    def get_egg_mod(self):
+        '''Get the genotype-specific modifier for the number of eggs
+
+        Returns:
+            modifier (float)
+                Modifier for this genotype
+
+        Example:
+        >>> i.get_egg_mod()
+        0.95
+        '''
+        return EGGS_MOD[self.sex].get(self.get_genotype(), 1.)
+
+    def get_hatching_mod(self):
+        '''Get the genotype-specific modifier for the hatching rate
+
+        Returns:
+            modifier (float)
+                Modifier for this genotype
+
+        Example:
+        >>> i.get_hatching_mod()
+        0.95
+        '''
+        return HATCHING_MOD[self.sex].get(self.get_genotype(), 1.)
+
+    def get_deposition_mod(self):
+        '''Get the genotype-specific modifier for the deposition prob
+
+        Returns:
+            modifier (float)
+                Modifier for this genotype
+
+        Example:
+        >>> i.get_deposition_mod()
+        0.95
+        '''
+        return DEPOSITION_MOD[self.sex].get(self.get_genotype(), 1.)
 
 
 def mate_all(population,
@@ -550,7 +711,7 @@ def mate(m, f,
          multiple_mating_female=None,
          multiple_mating_male=None):
     '''Mate a female with a male, if conditions are right
-    
+
     Args:
         m (Individual)
             A male
@@ -579,13 +740,23 @@ def mate(m, f,
     if not multiple_mating_male:
         m.mated = True
 
+    # introduce modifiers
+    # needs to be done here because male and female genotypes interact
+    deposition_mod = m.get_deposition_mod() * f.get_deposition_mod()
+    egg_mod = m.get_egg_mod() * f.get_egg_mod()
+    hatching_mod = m.get_hatching_mod() * f.get_hatching_mod()
+
     # can they both mate?
     # also can the female depose eggs?
-    if not f.mating or not m.mating or not f.deposing_eggs:
+    if not f.mating or not m.mating:
+        return eggs
+    if not f.deposes_eggs(deposition_mod):
         return eggs
 
+    actual_eggs = round(f.eggs * egg_mod)
+
     # we assume all female gametes become eggs
-    for egg in range(f.eggs):
+    for egg in range(actual_eggs):
         # are we inheriting nuclease from one of the parents?
         nucl_from_father = False
         nucl_from_mother = False
@@ -607,7 +778,8 @@ def mate(m, f,
         else:
             sex = 'f'
         eggs.add(Individual(sex, (fg1, mg1), (fg2, mg2),
-                            nucl_from_father, nucl_from_mother))
+                            nucl_from_father, nucl_from_mother,
+                            hatching_mod))
 
     # regenerate mating probability for next cycle
     # m.mating = m.get_mating()
@@ -618,7 +790,7 @@ def mate(m, f,
 
 def get_all_genotypes():
     '''A generator of all possible genotypes
-    
+
     Useful for output generation'''
     g1 = {DRIVE, RESISTANCE, WILD_TYPE}
     g2 = {ANTI_DRIVE, WILD_TYPE}
@@ -652,7 +824,7 @@ def print_status(time, population, output,
                  initial_population,
                  eggs, repetition):
     '''Print information about the genotype frequencies to stdout
-    
+
     Args:
         time (float)
             Simulation time, in days
@@ -678,7 +850,7 @@ def print_status(time, population, output,
             results.append(0.)
         else:
             results.append(len([x for x in fpop
-                                if x.mating and x.deposing_eggs]) / len(fpop))
+                                if x.mating]) / len(fpop))
         results.append(len([x for x in population
                             if x.genotype1 == {WILD_TYPE, }
                             and x.genotype2 == {WILD_TYPE, }]) / pop)
@@ -743,7 +915,7 @@ def run_simulation(start_populations,
                    eggs_filter=None,
                    use_adults_if_needed=False):
     '''Run a full large-cage simulation given a series of start populations
-    
+
     Args:
         start_populations (iterable of iterables)
             An iterable of default populations to introduce
@@ -846,7 +1018,7 @@ def run_simulation(start_populations,
 
         # day of the week
         day = round(total_time, 1) % 7
-        
+
         eggs = set()
 
         #  Select the larvae from previous harvests
@@ -859,7 +1031,7 @@ def run_simulation(start_populations,
         else:
             larvae = []
             pupae = []
-        
+
         # feeding/harvesting/release day
         if day % 1 == 0 and int(day) in release_days:
             restocking = True
