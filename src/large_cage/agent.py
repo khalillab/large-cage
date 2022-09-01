@@ -457,7 +457,11 @@ class Individual():
         return False
 
     def _mating_probability(self):
-        return MATING_PROBABILITY_MALE * MATING_MOD[self.sex
+        if self.sex == 'm':
+            mating_probability = MATING_PROBABILITY_MALE
+        else:
+            mating_probability = MATING_PROBABILITY
+        return mating_probability * MATING_MOD[self.sex
                 ].get(self.get_genotype(), 1)
 
     def get_mating(self):
