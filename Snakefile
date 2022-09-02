@@ -1639,6 +1639,140 @@ rule run_G2_baseline:
       rm -rf src/__pycache__
       '''
 
+rule G3_scenario_WT:
+  input:
+    expand('out/final/G3/WT/{pair}.tsv',
+           pair=pairs)
+
+rule run_G3_scenario_WT:
+  message:
+    '''
+    Run final simulations (G3 scenario, WT)
+    '''
+  output:
+      'out/final/G3/WT/{mating}-{eggs}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 25,
+      end_time = 500
+  shell:
+      '''
+      cp src/parameters_G3.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 0 \
+          --antidote 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+          --release {params.release} \
+          --mating-probability {wildcards.mating} \
+          --egg-deposition-probability {wildcards.eggs} \
+          --end-time {params.end_time} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
+rule G3_scenario:
+  input:
+    expand('out/final/G3/{pair}-{effect}.tsv',
+           effect=[1],
+           pair=pairs)
+
+rule run_G3_scenario:
+  message:
+    '''
+    Run final simulations (G3 scenario)
+    '''
+  output:
+      'out/final/G3/{mating}-{eggs}-{effect}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 25,
+      drive = 228,
+      anti = 137,
+      late_start = 147,
+      end_time = 500
+  shell:
+      '''
+      cp src/parameters_G3.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect {wildcards.effect} \
+          --mating-probability {wildcards.mating} \
+          --egg-deposition-probability {wildcards.eggs} \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --end-time {params.end_time} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
+rule G3_baseline:
+  input:
+    expand('out/final/G3/baseline/{pair}.tsv',
+           pair=pairs)
+ 
+rule run_G3_baseline:
+  message:
+    '''
+    Run simulations without antidote
+    '''
+  output:
+      'out/final/G3/baseline/{mating}-{eggs}.tsv'
+  params:
+      pop_size = 600,
+      release = 600,
+      repetitions = 25,
+      drive = 228,
+      end_time = 500
+  shell:
+      '''
+      cp src/parameters_G2.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                  0 0 0 0 0 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 0 0 \
+                     0 0 0 0 0 0 \
+          --wild-type {params.pop_size} {params.pop_size} {params.pop_size} {params.pop_size} \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+                      0 0 0 0 \
+                      0 0 0 0 0 0 \
+          --release {params.release} \
+          --mating-probability {wildcards.mating} \
+          --egg-deposition-probability {wildcards.eggs} \
+          --end-time {params.end_time} \
+          --override-parameters \
+	  --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
 rule G_parameters:
   input:
     expand('out/final/G/parameters/{mating}-{eggs}.tsv',
@@ -1888,7 +2022,108 @@ rule bugdorm2_wt_scenario:
       repetitions = 25,
   shell:
       '''
-      cp src/parameters_bugdorm.py src/parameters.py
+      cp src/parameters_bugdorm2.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 \
+          --antidote 0 0 0 \
+          --wild-type {params.pop_size} 0 0 \
+          --release {params.release} \
+          --mating-probability 0.2 \
+          --egg-deposition-probability 0.23857499999999998 \
+          --override-parameters \
+          --use-adults \
+          --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
+rule bugdorm3_scenario:
+  message:
+    '''
+    Run final simulations (bugdorm3 scenario)
+    '''
+  output:
+      'out/final/bugdorm3/antidote.tsv'
+  params:
+      pop_size = 400,
+      release = 150,
+      repetitions = 25,
+      drive = 111,
+      anti = 66,
+      late_start = 42,
+      end_time = 365
+  shell:
+      '''
+      cp src/parameters_bugdorm3.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 \
+                     0 0 0 \
+          --wild-type {params.pop_size} 0 0 \
+                      0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect 1 \
+          --mating-probability 0.2 \
+          --egg-deposition-probability 0.23857499999999998 \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --end-time {params.end_time} \
+          --override-parameters \
+          --use-adults \
+	        --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
+rule bugdorm3_baseline_scenario:
+  message:
+    '''
+    Run final simulations (bugdorm3 scenario)
+    '''
+  output:
+      'out/final/bugdorm3/baseline.tsv'
+  params:
+      pop_size = 400,
+      release = 150,
+      repetitions = 25,
+      drive=111,
+  shell:
+      '''
+      cp src/parameters_bugdorm3.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 \
+                     0 0 0 \
+          --wild-type {params.pop_size} 0 0 \
+                      0 0 0 \
+          --release {params.release} \
+          --mating-probability 0.2 \
+          --egg-deposition-probability 0.23857499999999998 \
+          --override-parameters \
+          --use-adults \
+          --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
+rule bugdorm3_wt_scenario:
+  message:
+    '''
+    Run final simulations (bugdorm3 scenario)
+    '''
+  output:
+      'out/final/bugdorm3/wt.tsv'
+  params:
+      pop_size = 400,
+      release = 150,
+      repetitions = 25,
+  shell:
+      '''
+      cp src/parameters_bugdorm3.py src/parameters.py
       python3 src/simulation.py \
           --drive 0 0 0 \
           --antidote 0 0 0 \
@@ -1929,6 +2164,12 @@ rule all2:
     rules.G2_baseline.input,
     rules.G2_scenario.input,
     rules.G2_scenario_WT.input,
+
+rule all3:
+  input:
+    rules.G3_baseline.input,
+    rules.G3_scenario.input,
+    rules.G3_scenario_WT.input,
     
 rule bugdorm:
   input:
@@ -1941,6 +2182,12 @@ rule bugdorm2:
     rules.bugdorm2_wt_scenario.output,
     rules.bugdorm2_baseline_scenario.output,
     rules.bugdorm2_scenario.output,
+
+rule bugdorm3:
+  input:
+    rules.bugdorm3_wt_scenario.output,
+    rules.bugdorm3_baseline_scenario.output,
+    rules.bugdorm3_scenario.output,
 
 rule all_parameters:
   input:
