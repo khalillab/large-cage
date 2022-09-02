@@ -1802,6 +1802,107 @@ rule bugdorm_wt_scenario:
       rm -rf src/__pycache__
       '''
 
+rule bugdorm2_scenario:
+  message:
+    '''
+    Run final simulations (bugdorm2 scenario)
+    '''
+  output:
+      'out/final/bugdorm2/antidote.tsv'
+  params:
+      pop_size = 400,
+      release = 150,
+      repetitions = 25,
+      drive = 111,
+      anti = 66,
+      late_start = 42,
+      end_time = 365
+  shell:
+      '''
+      cp src/parameters_bugdorm2.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 \
+                     0 0 0 \
+          --wild-type {params.pop_size} 0 0 \
+                      0 0 0 \
+          --release {params.release} \
+          --hom-antidote \
+          --het-antidote-effect 1 \
+          --mating-probability 0.2 \
+          --egg-deposition-probability 0.23857499999999998 \
+          --late-releases -1 \
+          --late-releases-start {params.late_start} \
+          --late-anti {params.anti} \
+          --end-time {params.end_time} \
+          --override-parameters \
+          --use-adults \
+	        --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
+rule bugdorm2_baseline_scenario:
+  message:
+    '''
+    Run final simulations (bugdorm2 scenario)
+    '''
+  output:
+      'out/final/bugdorm2/baseline.tsv'
+  params:
+      pop_size = 400,
+      release = 150,
+      repetitions = 25,
+      drive=111,
+  shell:
+      '''
+      cp src/parameters_bugdorm2.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 \
+                  {params.drive} {params.drive} {params.drive} \
+          --antidote 0 0 0 \
+                     0 0 0 \
+          --wild-type {params.pop_size} 0 0 \
+                      0 0 0 \
+          --release {params.release} \
+          --mating-probability 0.2 \
+          --egg-deposition-probability 0.23857499999999998 \
+          --override-parameters \
+          --use-adults \
+          --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
+rule bugdorm2_wt_scenario:
+  message:
+    '''
+    Run final simulations (bugdorm2 scenario)
+    '''
+  output:
+      'out/final/bugdorm2/wt.tsv'
+  params:
+      pop_size = 400,
+      release = 150,
+      repetitions = 25,
+  shell:
+      '''
+      cp src/parameters_bugdorm.py src/parameters.py
+      python3 src/simulation.py \
+          --drive 0 0 0 \
+          --antidote 0 0 0 \
+          --wild-type {params.pop_size} 0 0 \
+          --release {params.release} \
+          --mating-probability 0.2 \
+          --egg-deposition-probability 0.23857499999999998 \
+          --override-parameters \
+          --use-adults \
+          --repetitions {params.repetitions} > {output}
+      rm src/parameters.py
+      rm -rf src/__pycache__
+      '''
+
 rule final:
   input:
     rules.control_scenario.output,
@@ -1834,6 +1935,12 @@ rule bugdorm:
     rules.bugdorm_wt_scenario.output,
     rules.bugdorm_baseline_scenario.output,
     rules.bugdorm_scenario.output,
+
+rule bugdorm2:
+  input:
+    rules.bugdorm2_wt_scenario.output,
+    rules.bugdorm2_baseline_scenario.output,
+    rules.bugdorm2_scenario.output,
 
 rule all_parameters:
   input:
