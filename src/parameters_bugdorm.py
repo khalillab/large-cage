@@ -13,7 +13,7 @@ from scipy import stats as _stats
 DEPOSITION_MOD = {
 'f': {'DWAA': 0.58,
      'DWAW': 0.58,
-     'DWWW': 0.5,
+     'DWWW': 0.69,
      'RWAA': 0.58,
      'RWAW': 0.58,
      'RWWW': 0.5,

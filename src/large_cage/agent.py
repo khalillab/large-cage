@@ -26,11 +26,11 @@ MATING_PROBABILITY = 0.6
 MATING_PROBABILITY_MALE = 1
 # genotype modifiers for mating probability
 MATING_MOD = {
-'f': {'DWAA': 0.64,
-     'DWAW': 0.64,
-     'DWWW': 0.13,
-     'RWAW': 1.19,
-     'WWAW': 1.19},
+'f': {'DWAA': 0.82,
+     'DWAW': 0.82,
+     'DWWW': 0.45,
+     'RWAW': 1.03,
+     'WWAW': 1.03},
 'm': {'DDAA': 0.69,
      'DDAW': 1.06,
      'DDWW': 0.86,
@@ -38,14 +38,14 @@ MATING_MOD = {
      'DRAW': 1.06,
      'DRWW': 0.86,
      'DWAA': 0.69,
-     'DWAW': 1.06,
-     'DWWW': 0.86,
+     'DWAW': 1.37,
+     'DWWW': 1.28,
      'RRAA': 0.69,
      'RRAW': 0.94,
      'RWAA': 0.69,
      'RWAW': 0.94,
-     'WWAA': 0.69,
-     'WWAW': 0.94}
+     'WWAA': 0.62,
+     'WWAW': 0.81}
 }
 # can females/males mate multiple times?
 MULTIPLE_MATING_FEMALE = False

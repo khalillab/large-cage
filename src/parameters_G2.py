@@ -12,21 +12,20 @@ from scipy import stats as _stats
 #
 # genotype modifiers for mating probability
 MATING_MOD = {
-'f': {'DWAA': 0.64,
-     'DWAW': 0.64,
-     'DWWW': 0.13},
+'f': {'DWAA': 0.82,
+     'DWAW': 0.82,
+     'DWWW': 0.45},
 'm': {'DDAA': 0.69,
      'DDWW': 0.86,
      'DRAA': 0.69,
      'DRWW': 0.86,
      'DWAA': 0.69,
-     'DWWW': 0.86,
      'RRAA': 0.69,
      'RRAW': 0.94,
      'RWAA': 0.69,
      'RWAW': 0.94,
-     'WWAA': 0.69,
-     'WWAW': 0.94}
+     'WWAA': 0.62,
+     'WWAW': 0.81}
 }
 # genotype modifiers for number of eggs
 EGGS_MOD = {
