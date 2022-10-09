@@ -12,216 +12,32 @@ from copy import deepcopy
 #
 # can be overridden by calling scipts
 #
-# release size
-# (i.e. how many pupae)
-RELEASE = 400
-# how many simulations to run
-REPETITIONS = 100
-# fitness effect of the antidrive (on number of eggs)
-HOM_ANTIDRIVE_EFFECT = 1
-HET_ANTIDRIVE_EFFECT = 1
-# females mating probability
-MATING_PROBABILITY = 0.6
-# males mating probability
-MATING_PROBABILITY_MALE = 1
-# genotype modifiers for mating probability
-MATING_MOD = {
-'f': {'DWAA': 0.82,
-     'DWAW': 0.82,
-     'DWWW': 0.45,
-     'RWAW': 1.03,
-     'WWAW': 1.03},
-'m': {'DDAA': 0.69,
-     'DDAW': 1.06,
-     'DDWW': 0.86,
-     'DRAA': 0.69,
-     'DRAW': 1.06,
-     'DRWW': 0.86,
-     'DWAA': 0.69,
-     'DWAW': 1.37,
-     'DWWW': 1.28,
-     'RRAA': 0.69,
-     'RRAW': 0.94,
-     'RWAA': 0.69,
-     'RWAW': 0.94,
-     'WWAA': 0.62,
-     'WWAW': 0.81}
-}
-# can females/males mate multiple times?
-MULTIPLE_MATING_FEMALE = False
-MULTIPLE_MATING_MALE = True
-# females eggs deposition probability
-EGG_DEPOSITION_PROBABILITY = 0.5
-# genotype modifiers for deposition probability
-DEPOSITION_MOD = {
-'m': {},
-'f': {}
-}
-# lifespan for adults (weibull)
-# a random variable is derived from this distribution
-SURVIVAL = stats.weibull_min(c=2.2472084592310644,
-                             scale=6.213064151445494,
-                             loc=0.7275226197070571)
-SURVIVAL_MALE = SURVIVAL
-SURVIVAL_FEMALE = SURVIVAL
-# times from egg to full adult
-# time 0 is egg deposition
-# timer is reset once adult stage is reached
-# times are extracted from a uniform distribution
-# between the two extremes
-TIME_TO_HATCH = (1.8, 2.2)
-TIME_TO_PUPA = (9, 10)
-TIME_TO_MATURATION = (10, 12)
-# frequency of update of the simulation
-# best not to change this in order to avoid missing
-# introductions and other unforeseen bugs
-TIME_STEP = 0.1
-# days of the week for releases
-# use integers here: 0 is Monday, six is Sunday
-RELEASE_DAYS = [1, 4]
-# alleles (at two loci)
-WILD_TYPE = 'W' # both loci
-DRIVE = 'D' # locus 1
-ANTI_DRIVE = 'A' # locus 2
-RESISTANCE = 'R' # locus 1
-# which genotypes are sterile (locus 1)
-NON_FUNCTIONAL = [
-        {'D'}, # homozygous
-        {'D', 'R'}, # heterozygous
-        {'R'}] # homozygous
-# phenotype of different genotypes
-# for each parameter we define the normal distribution
-# from which to extract the random variable
-# 
-# NUCL_FROM_* indicates from which parent the nuclease
-# has been inherited
-#
-# homing efficiency
-DRIVE_EFFICIENCY_FEMALE = stats.norm(loc=0.9867,
-                                     scale=0.0163)
-DRIVE_EFFICIENCY_MALE = stats.norm(loc=0.9667,
-                                   scale=0.0408)
-# antidote efficiency
-DRIVE_EFFICIENCY_MOD = {
-'f': {'DRAA': 0.5,
-     'DRAW': 0.5,
-     'DRWW': 0.5,
-     'DWAA': 0.55,
-     'DWAW': 0.55},
-'m': {'DRAA': 0.5,
-     'DRAW': 0.5,
-     'DRWW': 0.5,
-     'DWAA': 0.52,
-     'DWAW': 0.52}
-}
-# antidote inheritance
-ANTIDOTE_INHERITANCE = {
-'f': {'DDAW': 0.52,
-     'DRAW': 0.52,
-     'DWAW': 0.52,
-     'RRAW': 0.52,
-     'RWAW': 0.52,
-     'WWAW': 0.52},
-'m': {'DDAW': 0.48,
-     'DRAW': 0.48,
-     'DWAW': 0.51,
-     'RRAW': 0.48,
-     'RWAW': 0.48,
-     'WWAW': 0.48}
-}
-# emergence of resistant allele (if drive fails)
-RESISTANCE_EFFICIENCY = {'f': 0.4685,
-                         'm': 0.4685}
-# number of eggs
-EGGS_WT = stats.norm(loc=137.4,
-                     scale=34.5)
-EGGS_NUCL_FROM_MOTHER = EGGS_WT
-EGGS_NUCL_FROM_FATHER = EGGS_WT
-EGGS_NUCL_FROM_BOTH = EGGS_WT
-# genotype modifiers for number of eggs
-EGGS_MOD = {
-'f': {'DWAA': 0.96,
-     'DWAW': 0.96,
-     'DWWW': 0.65,
-     'RWAA': 1.08,
-     'RWAW': 1.15,
-     'WWAA': 1.08,
-     'WWAW': 1.15},
-'m': {'DDAA': 1.07,
-     'DDAW': 1.07,
-     'DDWW': 1.1,
-     'DRAA': 1.07,
-     'DRAW': 1.07,
-     'DRWW': 1.1,
-     'DWAA': 1.07,
-     'DWAW': 1.07,
-     'DWWW': 1.1,
-     'RRAA': 1.25,
-     'RRAW': 1.35,
-     'RWAA': 1.25,
-     'RWAW': 1.35,
-     'WWAA': 1.25,
-     'WWAW': 1.35}
-}
-# eggs hatching probability
-HATCHING_WT = stats.norm(loc=0.8667,
-                         scale=0.0046)
-HATCHING_NUCL_FROM_MOTHER = HATCHING_WT
-HATCHING_NUCL_FROM_FATHER = HATCHING_WT
-HATCHING_NUCL_FROM_BOTH = HATCHING_WT
-# genotype modifiers for hatching rate
-HATCHING_MOD = {
-'f': {'DWAA': 0.81,
-     'DWAW': 0.81,
-     'DWWW': 0.62,
-     'RWAA': 1.15,
-     'RWAW': 1.05,
-     'WWAA': 1.15,
-     'WWAW': 1.05},
-'m': {'DDAA': 1.1,
-     'DDAW': 1.1,
-     'DDWW': 1.06,
-     'DRAA': 1.1,
-     'DRAW': 1.1,
-     'DRWW': 1.06,
-     'DWAA': 1.1,
-     'DWAW': 1.1,
-     'DWWW': 1.06,
-     'RRAA': 1.05,
-     'RRAW': 1.1,
-     'RWAA': 1.05,
-     'RWAW': 1.1,
-     'WWAA': 1.05,
-     'WWAW': 1.1}
-}
-# larval mortality 
-LARVAL_WT = stats.norm(loc=0.0825,
-                       scale=0.0214)
-LARVAL_NUCL_FROM_MOTHER = LARVAL_WT
-LARVAL_NUCL_FROM_FATHER = LARVAL_WT
-LARVAL_NUCL_FROM_BOTH = LARVAL_WT
-# pupal mortality (males)
-PUPAL_M_WT = stats.norm(loc=0.0918,
-                        scale=0.0161)
-PUPAL_M_NUCL_FROM_MOTHER = PUPAL_M_WT
-PUPAL_M_NUCL_FROM_FATHER = PUPAL_M_WT
-PUPAL_M_NUCL_FROM_BOTH = PUPAL_M_WT
-# pupal mortality (females)
-PUPAL_F_WT = stats.norm(loc=0.0918,
-                        scale=0.0161)
-PUPAL_F_NUCL_FROM_MOTHER = PUPAL_F_WT
-PUPAL_F_NUCL_FROM_FATHER = PUPAL_F_WT
-# is this individual intersex?
-# (means that it does not mate)
-# requires presence of the drive in locus 1
-INTERSEX_NUCL_FROM_FATHER = stats.norm(loc=0.0353,
-                                       scale=0.0124)
-INTERSEX_NUCL_FROM_MOTHER = stats.norm(loc=0.0096,
-                                       scale=0.0066)
-# eggs filter
-# (to simulate any problems with eggs production)
-EGGS_FILTER_MEAN = 1750 
-EGGS_FILTER_STD = 150
+params = {
+ }
+
+distributions = {}
+
+
+def get_rvs(dist, params):
+    if dist not in distributions:
+        distributions[dist] = {}
+
+    if dist == 'norm':
+        loc, scale = params
+        if params not in distributions[dist]:
+            distributions[dist][params] = stats.norm(loc=loc,
+                                                     scale=scale)
+    elif dist == 'weibull':
+        loc, scale, c = params
+        if params not in distributions[dist]:
+            distributions[dist][params] = stats.weibull_min(c=c,
+                                                            loc=loc,
+                                                            scale=scale)
+    else:
+        raise ValueError(f'{dist} not implemented yet')
+
+    return distributions[dist][params].rvs()
+
 
 class Individual():
     '''Individual mosquito model
@@ -276,7 +92,7 @@ class Individual():
     '''
     def __init__(self, sex, genotype1, genotype2,
                  nucl_from_father=False, nucl_from_mother=False,
-                 hatching_mod=1):
+                 hatching_mod=1, parameters=None):
         '''Create a new individual for the simulation
         Starts from the egg stage
 
@@ -293,7 +109,14 @@ class Individual():
                 Wether the mother passes the nuclease to the egg
             hatching_mod (float)
                 Modifier for the hatching probability
+            parameters (dict)
+                parameters dictionary
         '''
+        if parameters is None:
+            self.p = {}
+        else:
+            self.p = parameters
+
         self.sex = sex
         self.nucl_from_father = nucl_from_father
         self.nucl_from_mother = nucl_from_mother
@@ -310,14 +133,19 @@ class Individual():
         self.genotype2 = set(genotype2)
 
         self.age = 0.
-        self.time_to_hatch = random.uniform(TIME_TO_HATCH[0], TIME_TO_HATCH[1])
-        self.time_to_pupa = random.uniform(TIME_TO_PUPA[0], TIME_TO_PUPA[1])
-        self.time_to_maturation = random.uniform(TIME_TO_MATURATION[0], TIME_TO_MATURATION[1])
+        self.time_to_hatch = random.uniform(self.p['TIME_TO_HATCH'][0], self.p['TIME_TO_HATCH'][1])
+        self.time_to_pupa = random.uniform(self.p['TIME_TO_PUPA'][0], self.p['TIME_TO_PUPA'][1])
+        self.time_to_maturation = random.uniform(self.p['TIME_TO_MATURATION'][0], self.p['TIME_TO_MATURATION'][1])
         # lifespan after full maturation
         if self.sex == 'm':
-            self.death = SURVIVAL_MALE.rvs()
+            self.death = get_rvs('weibull', (self.p['SURVIVAL_MALE']['loc'],
+                                             self.p['SURVIVAL_MALE']['scale'],
+                                             self.p['SURVIVAL_MALE']['c']))
         else:
-            self.death = SURVIVAL_FEMALE.rvs()
+            self.death = get_rvs('weibull', (self.p['SURVIVAL_FEMALE']['loc'],
+                                             self.p['SURVIVAL_FEMALE']['scale'],
+                                             self.p['SURVIVAL_FEMALE']['c']))
+
         # egg -> larva -> pupa -> adult
         self.stage = 'egg'
 
@@ -337,34 +165,43 @@ class Individual():
         self.deposing_eggs = self.deposes_eggs(self.get_deposition_mod())
 
         # egg production
-        if self.sex == 'f' and self.genotype1 not in NON_FUNCTIONAL:
-            if DRIVE not in self.genotype1:
-                self.eggs = int(EGGS_WT.rvs())
-            elif DRIVE in self.genotype1 and nucl_from_father and nucl_from_mother:
-                self.eggs = int(EGGS_NUCL_FROM_BOTH.rvs())
-            elif DRIVE in self.genotype1 and nucl_from_father:
-                self.eggs = int(EGGS_NUCL_FROM_FATHER.rvs())
-            elif DRIVE in self.genotype1 and nucl_from_mother:
-                self.eggs = int(EGGS_NUCL_FROM_MOTHER.rvs())
+        if self.sex == 'f' and ''.join(sorted(self.genotype1)) not in self.p['NON_FUNCTIONAL']:
+            if self.p['DRIVE'] not in self.genotype1:
+                self.eggs = int(get_rvs('norm', (self.p['EGGS_WT']['loc'],
+                                                 self.p['EGGS_WT']['scale'])))
+            elif self.p['DRIVE'] in self.genotype1 and nucl_from_father and nucl_from_mother:
+                self.eggs = int(get_rvs('norm', (self.p['EGGS_NUCL_FROM_BOTH']['loc'],
+                                                 self.p['EGGS_NUCL_FROM_BOTH']['scale'])))
+            elif self.p['DRIVE'] in self.genotype1 and nucl_from_father:
+                self.eggs = int(get_rvs('norm', (self.p['EGGS_NUCL_FROM_FATHER']['loc'],
+                                                 self.p['EGGS_NUCL_FROM_FATHER']['scale'])))
+            elif self.p['DRIVE'] in self.genotype1 and nucl_from_mother:
+                self.eggs = int(get_rvs('norm', (self.p['EGGS_NUCL_FROM_MOTHER']['loc'],
+                                                 self.p['EGGS_NUCL_FROM_MOTHER']['scale'])))
             else:
                 raise RuntimeError(self.genotype1, nucl_from_father, nucl_from_mother)
         else:
             self.eggs = 0
-        if ANTI_DRIVE in self.genotype2:
+
+        if self.p['ANTI_DRIVE'] in self.genotype2:
             if self.hom2:
-                self.eggs = int(round(self.eggs * HOM_ANTIDRIVE_EFFECT))
+                self.eggs = int(round(self.eggs * self.p['HOM_ANTIDRIVE_EFFECT']))
             else:
-                self.eggs = int(round(self.eggs * HET_ANTIDRIVE_EFFECT))
+                self.eggs = int(round(self.eggs * self.p['HET_ANTIDRIVE_EFFECT']))
 
         # hatching probability
-        if DRIVE not in self.genotype1:
-            hatching = HATCHING_WT.rvs()
-        elif DRIVE in self.genotype1 and nucl_from_father and nucl_from_mother:
-            hatching = HATCHING_NUCL_FROM_BOTH.rvs()
-        elif DRIVE in self.genotype1 and nucl_from_father:
-            hatching = HATCHING_NUCL_FROM_FATHER.rvs()
-        elif DRIVE in self.genotype1 and nucl_from_mother:
-            hatching = HATCHING_NUCL_FROM_MOTHER.rvs()
+        if self.p['DRIVE'] not in self.genotype1:
+            hatching = get_rvs('norm', (self.p['HATCHING_WT']['loc'],
+                                        self.p['HATCHING_WT']['scale']))
+        elif self.p['DRIVE'] in self.genotype1 and nucl_from_father and nucl_from_mother:
+            hatching = get_rvs('norm', (self.p['HATCHING_NUCL_FROM_BOTH']['loc'],
+                                        self.p['HATCHING_NUCL_FROM_BOTH']['scale']))
+        elif self.p['DRIVE'] in self.genotype1 and nucl_from_father:
+            hatching = get_rvs('norm', (self.p['HATCHING_NUCL_FROM_FATHER']['loc'],
+                                        self.p['HATCHING_NUCL_FROM_FATHER']['scale']))
+        elif self.p['DRIVE'] in self.genotype1 and nucl_from_mother:
+            hatching = get_rvs('norm', (self.p['HATCHING_NUCL_FROM_MOTHER']['loc'],
+                                        self.p['HATCHING_NUCL_FROM_MOTHER']['scale']))
         else:
             raise RuntimeError(self.genotype1, nucl_from_father, nucl_from_mother)
         # apply modifier for hatching probability
@@ -375,14 +212,18 @@ class Individual():
             self.hatching = False
 
         # larval mortality
-        if DRIVE not in self.genotype1:
-            larval = LARVAL_WT.rvs()
-        elif DRIVE in self.genotype1 and nucl_from_father and nucl_from_mother:
-            larval = LARVAL_NUCL_FROM_BOTH.rvs()
-        elif DRIVE in self.genotype1 and nucl_from_father:
-            larval = LARVAL_NUCL_FROM_FATHER.rvs()
-        elif DRIVE in self.genotype1 and nucl_from_mother:
-            larval = LARVAL_NUCL_FROM_MOTHER.rvs()
+        if self.p['DRIVE'] not in self.genotype1:
+            larval = get_rvs('norm', (self.p['LARVAL_WT']['loc'],
+                                      self.p['LARVAL_WT']['scale']))
+        elif self.p['DRIVE'] in self.genotype1 and nucl_from_father and nucl_from_mother:
+            larval = get_rvs('norm', (self.p['LARVAL_NUCL_FROM_BOTH']['loc'],
+                                      self.p['LARVAL_NUCL_FROM_BOTH']['scale']))
+        elif self.p['DRIVE'] in self.genotype1 and nucl_from_father:
+            larval = get_rvs('norm', (self.p['LARVAL_NUCL_FROM_FATHER']['loc'],
+                                      self.p['LARVAL_NUCL_FROM_FATHER']['scale']))
+        elif self.p['DRIVE'] in self.genotype1 and nucl_from_mother:
+            larval = get_rvs('norm', (self.p['LARVAL_NUCL_FROM_MOTHER']['loc'],
+                                      self.p['LARVAL_NUCL_FROM_MOTHER']['scale']))
         else:
             raise RuntimeError(self.genotype1, nucl_from_father, nucl_from_mother)
         if random.random() < larval:
@@ -392,26 +233,34 @@ class Individual():
 
         # pupal mortality
         if sex == 'm':
-            if DRIVE not in self.genotype1:
-                pupal = PUPAL_M_WT.rvs()
-            elif DRIVE in self.genotype1 and nucl_from_father and nucl_from_mother:
-                pupal = PUPAL_M_NUCL_FROM_BOTH.rvs()
-            elif DRIVE in self.genotype1 and nucl_from_father:
-                pupal = PUPAL_M_NUCL_FROM_FATHER.rvs()
-            elif DRIVE in self.genotype1 and nucl_from_mother:
-                pupal = PUPAL_M_NUCL_FROM_MOTHER.rvs()
+            if self.p['DRIVE'] not in self.genotype1:
+                pupal = get_rvs('norm', (self.p['PUPAL_M_WT']['loc'],
+                                         self.p['PUPAL_M_WT']['scale']))
+            elif self.p['DRIVE'] in self.genotype1 and nucl_from_father and nucl_from_mother:
+                pupal = get_rvs('norm', (self.p['PUPAL_M_NUCL_FROM_BOTH']['loc'],
+                                         self.p['PUPAL_M_NUCL_FROM_BOTH']['scale']))
+            elif self.p['DRIVE'] in self.genotype1 and nucl_from_father:
+                pupal = get_rvs('norm', (self.p['PUPAL_M_NUCL_FROM_FATHER']['loc'],
+                                         self.p['PUPAL_M_NUCL_FROM_FATHER']['scale']))
+            elif self.p['DRIVE'] in self.genotype1 and nucl_from_mother:
+                pupal = get_rvs('norm', (self.p['PUPAL_M_NUCL_FROM_MOTHER']['loc'],
+                                         self.p['PUPAL_M_NUCL_FROM_MOTHER']['scale']))
             else:
                 raise RuntimeError(self.genotype1, nucl_from_father, nucl_from_mother)
         else:
-            if DRIVE not in self.genotype1:
-                pupal = PUPAL_F_WT.rvs()
-            elif DRIVE in self.genotype1 and nucl_from_father and nucl_from_mother:
+            if self.p['DRIVE'] not in self.genotype1:
+                pupal = get_rvs('norm', (self.p['PUPAL_F_WT']['loc'],
+                                         self.p['PUPAL_F_WT']['scale']))
+            elif self.p['DRIVE'] in self.genotype1 and nucl_from_father and nucl_from_mother:
                 # assumed
-                pupal = PUPAL_M_NUCL_FROM_BOTH.rvs()
-            elif DRIVE in self.genotype1 and nucl_from_father:
-                pupal = PUPAL_F_NUCL_FROM_FATHER.rvs()
-            elif DRIVE in self.genotype1 and nucl_from_mother:
-                pupal = PUPAL_F_NUCL_FROM_MOTHER.rvs()
+                pupal = get_rvs('norm', (self.p['PUPAL_M_NUCL_FROM_BOTH']['loc'],
+                                         self.p['PUPAL_M_NUCL_FROM_BOTH']['scale']))
+            elif self.p['DRIVE'] in self.genotype1 and nucl_from_father:
+                pupal = get_rvs('norm', (self.p['PUPAL_F_NUCL_FROM_FATHER']['loc'],
+                                         self.p['PUPAL_F_NUCL_FROM_FATHER']['scale']))
+            elif self.p['DRIVE'] in self.genotype1 and nucl_from_mother:
+                pupal = get_rvs('norm', (self.p['PUPAL_F_NUCL_FROM_MOTHER']['loc'],
+                                         self.p['PUPAL_F_NUCL_FROM_MOTHER']['scale']))
             else:
                 raise RuntimeError(self.genotype1, nucl_from_father, nucl_from_mother)
         if random.random() < pupal:
@@ -444,12 +293,14 @@ class Individual():
         return gt
 
     def _is_intersex(self):
-        if DRIVE in self.genotype1 and (self.nucl_from_father and self.nucl_from_mother):
+        if self.p['DRIVE'] in self.genotype1 and (self.nucl_from_father and self.nucl_from_mother):
             intersex = 0
-        elif DRIVE in self.genotype1 and self.nucl_from_father and self.sex == 'f':
-            intersex = INTERSEX_NUCL_FROM_FATHER.rvs()
-        elif DRIVE in self.genotype1 and self.nucl_from_mother and self.sex == 'f':
-            intersex = INTERSEX_NUCL_FROM_MOTHER.rvs()
+        elif self.p['DRIVE'] in self.genotype1 and self.nucl_from_father and self.sex == 'f':
+            intersex = get_rvs('norm', (self.p['INTERSEX_NUCL_FROM_FATHER']['loc'],
+                                        self.p['INTERSEX_NUCL_FROM_FATHER']['scale']))
+        elif self.p['DRIVE'] in self.genotype1 and self.nucl_from_mother and self.sex == 'f':
+            intersex = get_rvs('norm', (self.p['INTERSEX_NUCL_FROM_MOTHER']['loc'],
+                                        self.p['INTERSEX_NUCL_FROM_MOTHER']['scale']))
         else:
             intersex = 0
         if random.random() <= intersex:
@@ -458,10 +309,10 @@ class Individual():
 
     def _mating_probability(self):
         if self.sex == 'm':
-            mating_probability = MATING_PROBABILITY_MALE
+            mating_probability = self.p['MATING_PROBABILITY_MALE']
         else:
-            mating_probability = MATING_PROBABILITY
-        return mating_probability * MATING_MOD[self.sex
+            mating_probability = self.p['MATING_PROBABILITY']
+        return mating_probability * self.p['MATING_MOD'][self.sex
                 ].get(self.get_genotype(), 1)
 
     def get_mating(self):
@@ -475,7 +326,7 @@ class Individual():
         '''
         if self.intersex:
             return False
-        if self.sex == 'f' and self.genotype1 in NON_FUNCTIONAL:
+        if self.sex == 'f' and self.genotype1 in self.p['NON_FUNCTIONAL']:
             return False
         else:
             prob = self._mating_probability()
@@ -499,7 +350,7 @@ class Individual():
         '''
         if self.sex == 'm':
             return None
-        elif random.random() <= EGG_DEPOSITION_PROBABILITY * modifier:
+        elif random.random() <= self.p['EGG_DEPOSITION_PROBABILITY'] * modifier:
             return True
         return False
 
@@ -577,34 +428,36 @@ class Individual():
         '''
         if self.hom1:
             return tuple(self.genotype1)[0]
-        if DRIVE not in self.genotype1:
+        if self.p['DRIVE'] not in self.genotype1:
             return self._mendelian(self.genotype1)
         else:
             # anti-drive present?
-            if ANTI_DRIVE in self.genotype2:
-                if random.random() <= 1 - DRIVE_EFFICIENCY_MOD[self.sex
+            if self.p['ANTI_DRIVE'] in self.genotype2:
+                if random.random() <= 1 - self.p['DRIVE_EFFICIENCY_MOD'][self.sex
                         ].get(self.get_genotype(), 1):
-                    return DRIVE
+                    return self.p['DRIVE']
                 else:
                     # return the other allele
                     try:
-                        return sorted(set(self.genotype1).difference((DRIVE,)))[0]
+                        return sorted(set(self.genotype1).difference((self.p['DRIVE'],)))[0]
                     except Exception as e:
                         raise RuntimeError(self.genotype1, self.genotype2, str(e))
             # supermendelian
             if self.sex == 'm':
-                if random.random() <= DRIVE_EFFICIENCY_MALE.rvs():
-                    return DRIVE
+                if random.random() <= get_rvs('norm', (self.p['DRIVE_EFFICIENCY_MALE']['loc'],
+                                                       self.p['DRIVE_EFFICIENCY_MALE']['scale'])):
+                    return self.p['DRIVE']
             else:
-                if random.random() <= DRIVE_EFFICIENCY_FEMALE.rvs():
-                    return DRIVE
+                if random.random() <= get_rvs('norm', (self.p['DRIVE_EFFICIENCY_FEMALE']['loc'],
+                                                       self.p['DRIVE_EFFICIENCY_FEMALE']['scale'])):
+                    return self.p['DRIVE']
             # resistance
             # TODO: could have functional resistance here too?
-            if random.random() < RESISTANCE_EFFICIENCY[self.sex]:
-                return RESISTANCE
+            if random.random() < self.p['RESISTANCE_EFFICIENCY'][self.sex]:
+                return self.p['RESISTANCE']
             # return the other allele
             try:
-                return sorted(set(self.genotype1).difference((DRIVE,)))[0]
+                return sorted(set(self.genotype1).difference((self.p['DRIVE'])))[0]
             except Exception as e:
                 raise RuntimeError(self.genotype1, self.genotype2, str(e))
 
@@ -623,14 +476,14 @@ class Individual():
             return tuple(self.genotype2)[0]
         else:
             # anti-drive present?
-            if ANTI_DRIVE in self.genotype2:
-                if random.random() <= ANTIDOTE_INHERITANCE[self.sex
+            if self.p['ANTI_DRIVE'] in self.genotype2:
+                if random.random() <= self.p['ANTIDOTE_INHERITANCE'][self.sex
                         ].get(self.get_genotype(), 1):
-                    return ANTI_DRIVE
+                    return self.p['ANTI_DRIVE']
                 else:
                     # return the other allele
                     try:
-                        return sorted(set(self.genotype1).difference((ANTI_DRIVE,)))[0]
+                        return sorted(set(self.genotype1).difference((self.p['ANTI_DRIVE'],)))[0]
                     except Exception as e:
                         raise RuntimeError(self.genotype1, self.genotype2, str(e))
             # simple mendelian
@@ -647,7 +500,7 @@ class Individual():
         >>> i.get_egg_mod()
         0.95
         '''
-        return EGGS_MOD[self.sex].get(self.get_genotype(), 1.)
+        return self.p['EGGS_MOD'][self.sex].get(self.get_genotype(), 1.)
 
     def get_hatching_mod(self):
         '''Get the genotype-specific modifier for the hatching rate
@@ -660,7 +513,7 @@ class Individual():
         >>> i.get_hatching_mod()
         0.95
         '''
-        return HATCHING_MOD[self.sex].get(self.get_genotype(), 1.)
+        return self.p['HATCHING_MOD'][self.sex].get(self.get_genotype(), 1.)
 
     def get_deposition_mod(self):
         '''Get the genotype-specific modifier for the deposition prob
@@ -673,10 +526,10 @@ class Individual():
         >>> i.get_deposition_mod()
         0.95
         '''
-        return DEPOSITION_MOD[self.sex].get(self.get_genotype(), 1.)
+        return self.p['DEPOSITION_MOD'][self.sex].get(self.get_genotype(), 1.)
 
 
-def mate_all(population,
+def mate_all(population, p=None,
              multiple_mating_female=None,
              multiple_mating_male=None):
     '''Randomly mate all adults that can mate
@@ -684,6 +537,8 @@ def mate_all(population,
     Args:
         population (iterable)
             All individuals in the population
+        p (dict)
+            Parameters
         multiple_mating_female (bool)
             Wether females can mate multiple times in their lifetime
         multiple_mating_male (bool)
@@ -693,10 +548,12 @@ def mate_all(population,
         eggs (set)
             An iterable of offsprings (Individual objects)
     '''
+    if p is None:
+        p = params
     if multiple_mating_female is None:
-        multiple_mating_female=MULTIPLE_MATING_FEMALE
+        multiple_mating_female=p['MULTIPLE_MATING_FEMALE']
     if multiple_mating_male is None:
-        multiple_mating_male=MULTIPLE_MATING_MALE
+        multiple_mating_male=p['MULTIPLE_MATING_MALE']
     eggs = set()
     males = [x for x in population
                 if x.sex == 'm'
@@ -713,11 +570,11 @@ def mate_all(population,
     random.shuffle(males)
     random.shuffle(females)
     for m, f in zip(males, females):
-        eggs = eggs.union(mate(m, f))
+        eggs = eggs.union(mate(m, f, p=p))
     return eggs
 
 
-def mate(m, f,
+def mate(m, f, p=None,
          multiple_mating_female=None,
          multiple_mating_male=None):
     '''Mate a female with a male, if conditions are right
@@ -727,6 +584,8 @@ def mate(m, f,
             A male
         f (Individual)
             A female
+        p (dict)
+            Parameters
         multiple_mating_female (bool)
             Wether females can mate multiple times in their lifetime
         multiple_mating_male (bool)
@@ -736,10 +595,12 @@ def mate(m, f,
         eggs (set)
             An iterable of offsprings (Individual objects)
     '''
+    if p is None:
+        p = params
     if multiple_mating_female is None:
-        multiple_mating_female=MULTIPLE_MATING_FEMALE
+        multiple_mating_female=p['MULTIPLE_MATING_FEMALE']
     if multiple_mating_male is None:
-        multiple_mating_male=MULTIPLE_MATING_MALE
+        multiple_mating_male=p['MULTIPLE_MATING_MALE']
     if f.sex == m.sex:
         raise RuntimeError('Cannot mate')
 
@@ -770,9 +631,9 @@ def mate(m, f,
         # are we inheriting nuclease from one of the parents?
         nucl_from_father = False
         nucl_from_mother = False
-        if DRIVE in f.genotype1:
+        if p['DRIVE'] in f.genotype1:
             nucl_from_mother = True
-        if DRIVE in m.genotype1:
+        if p['DRIVE'] in m.genotype1:
             nucl_from_father = True
         # maternal gamete (locus1)
         fg1 = f.form_gamete1()
@@ -789,7 +650,7 @@ def mate(m, f,
             sex = 'f'
         eggs.add(Individual(sex, (fg1, mg1), (fg2, mg2),
                             nucl_from_father, nucl_from_mother,
-                            hatching_mod))
+                            hatching_mod, parameters=p))
 
     # regenerate mating probability for next cycle
     # m.mating = m.get_mating()
@@ -798,12 +659,19 @@ def mate(m, f,
     return eggs
 
 
-def get_all_genotypes():
+def get_all_genotypes(p=None):
     '''A generator of all possible genotypes
 
-    Useful for output generation'''
-    g1 = {DRIVE, RESISTANCE, WILD_TYPE}
-    g2 = {ANTI_DRIVE, WILD_TYPE}
+    Useful for output generation
+
+    Args:
+        p (dict)
+            Parameters
+    '''
+    if p is None:
+        p = params
+    g1 = {p['DRIVE'], p['RESISTANCE'], p['WILD_TYPE']}
+    g2 = {p['ANTI_DRIVE'], p['WILD_TYPE']}
     gt1 = set()
     for g11, g12 in itertools.product(g1, g1):
         gt1.add(tuple(sorted((g11, g12))))
@@ -815,24 +683,31 @@ def get_all_genotypes():
             yield ''.join(g1) + ''.join(g2)
 
 
-def print_header():
-    '''Print to stdout the header for the simulation output'''
+def print_header(p=None):
+    '''Print to stdout the header for the simulation output
+
+    Args:
+        p (dict)
+            Parameters
+    '''
+    if p is None:
+        p = params
     print('\t'.join(['round', 'time', 'initial_release',
                      'pop', 'fpop', 'eggs', 'feggs', 'output', 'foutput',
                      'fitness'] +
                     ['WT', 'transgenes', 'drives', 'anti', 'resistance'] +
-                    [gt for gt in get_all_genotypes()] +
-                    ['%s.eggs' % gt for gt in get_all_genotypes()] +
+                    [gt for gt in get_all_genotypes(p)] +
+                    ['%s.eggs' % gt for gt in get_all_genotypes(p)] +
                     ['WT.output', 'transgenes.output',
                      'drives.output', 'anti.output',
                      'resistance.output'] +
-                    ['%s.output' % gt for gt in get_all_genotypes()] 
+                    ['%s.output' % gt for gt in get_all_genotypes(p)] 
                     ))
 
 
 def print_status(time, population, output,
                  initial_population,
-                 eggs, repetition):
+                 eggs, repetition, p=None):
     '''Print information about the genotype frequencies to stdout
 
     Args:
@@ -848,7 +723,11 @@ def print_status(time, population, output,
             All eggs produced at this time point
         repetition (int)
             Round of simulation
+        p (dict)
+            Parameters
     '''
+    if p is None:
+        p = params
     fpop = [x for x in population if x.sex == 'f']
     pop = len(population)
     results = [repetition, time, initial_population,
@@ -862,46 +741,46 @@ def print_status(time, population, output,
             results.append(len([x for x in fpop
                                 if x.mating and x.deposing_eggs]) / len(fpop))
         results.append(len([x for x in population
-                            if x.genotype1 == {WILD_TYPE, }
-                            and x.genotype2 == {WILD_TYPE, }]) / pop)
+                            if x.genotype1 == {p['WILD_TYPE'], }
+                            and x.genotype2 == {p['WILD_TYPE'], }]) / pop)
         results.append(len([x for x in population
-                            if x.genotype1.difference({WILD_TYPE, }) != set()
-                            or x.genotype2.difference({WILD_TYPE, }) != set()]) / pop)
+                            if x.genotype1.difference({p['WILD_TYPE'], }) != set()
+                            or x.genotype2.difference({p['WILD_TYPE'], }) != set()]) / pop)
         results.append(len([x for x in population
-                            if DRIVE in x.genotype1]) / pop)
+                            if p['DRIVE'] in x.genotype1]) / pop)
         results.append(len([x for x in population
-                            if ANTI_DRIVE in x.genotype2]) / pop)
+                            if p['ANTI_DRIVE'] in x.genotype2]) / pop)
         results.append(len([x for x in population
-                            if RESISTANCE in x.genotype1]) / pop)
-        for gt in get_all_genotypes():
+                            if p['RESISTANCE'] in x.genotype1]) / pop)
+        for gt in get_all_genotypes(p):
             results.append(len([x for x in population
                                 if x.get_genotype() == gt]) / pop)
     else:
         for _ in range(6):
             results.append(np.nan)
-        for gt in get_all_genotypes():
+        for gt in get_all_genotypes(p):
             results.append(np.nan)
     if len(eggs) != 0:
-        for gt in get_all_genotypes():
+        for gt in get_all_genotypes(p):
             results.append(len([x for x in eggs
                                 if x.get_genotype() == gt]) / len(eggs))
     else:
-        for gt in get_all_genotypes():
+        for gt in get_all_genotypes(p):
             results.append(np.nan)
     if len(output) != 0:
         results.append(len([x for x in output
-                            if x.genotype1 == {WILD_TYPE, }
-                            and x.genotype2 == {WILD_TYPE, }]) / len(output))
+                            if x.genotype1 == {p['WILD_TYPE'], }
+                            and x.genotype2 == {p['WILD_TYPE'], }]) / len(output))
         results.append(len([x for x in output
-                            if x.genotype1.difference({WILD_TYPE, }) != set()
-                            or x.genotype2.difference({WILD_TYPE, }) != set()]) / len(output))
+                            if x.genotype1.difference({p['WILD_TYPE'], }) != set()
+                            or x.genotype2.difference({p['WILD_TYPE'], }) != set()]) / len(output))
         results.append(len([x for x in output
-                            if DRIVE in x.genotype1]) / len(output))
+                            if p['DRIVE'] in x.genotype1]) / len(output))
         results.append(len([x for x in output
-                            if ANTI_DRIVE in x.genotype2]) / len(output))
+                            if p['ANTI_DRIVE'] in x.genotype2]) / len(output))
         results.append(len([x for x in output
-                            if RESISTANCE in x.genotype1]) / len(output))
-        for gt in get_all_genotypes():
+                            if p['RESISTANCE'] in x.genotype1]) / len(output))
+        for gt in get_all_genotypes(p):
             results.append(len([x for x in output
                                 if x.get_genotype() == gt]) / len(output))
     else:
@@ -910,7 +789,7 @@ def print_status(time, population, output,
         results.append(np.nan)
         results.append(np.nan)
         results.append(np.nan)
-        for gt in get_all_genotypes():
+        for gt in get_all_genotypes(p):
             results.append(np.nan)
 
     print('\t'.join([str(x) for x in results]))
@@ -923,7 +802,8 @@ def run_simulation(start_populations,
                    report_times=None, release_days=None,
                    additional_releases=None,
                    eggs_filter=None,
-                   use_adults_if_needed=False):
+                   use_adults_if_needed=False,
+                   p=None):
     '''Run a full large-cage simulation given a series of start populations
 
     Args:
@@ -960,13 +840,17 @@ def run_simulation(start_populations,
         use_adults_if_needed (bool)
             If there are no pupae in the egg nursery, use adults
             (can be necessary if there is a single release)
+        p (dict)
+            Parameters
     '''
+    if p is None:
+        p = params
     if time_step is None:
-        time_step=TIME_STEP
+        time_step=p['TIME_STEP']
     if release is None:
-        release=RELEASE
+        release=p['RELEASE']
     if release_days is None:
-        release_days=RELEASE_DAYS
+        release_days=p['RELEASE_DAYS']
     if report_times is None:
         report_times = []
     if special_releases is None:
@@ -1064,7 +948,7 @@ def run_simulation(start_populations,
                         population.add(deepcopy(adult))
 
             # mate adults (we are after feeding)
-            eggs = mate_all(population)
+            eggs = mate_all(population, p=p)
             # trim eggs if parameter is set
             if eggs_filter is not None:
                 eggs = list(eggs)
@@ -1090,12 +974,12 @@ def run_simulation(start_populations,
                     release_pupae = pupae[:release]
                 population = population.union(release_pupae)
                 # remove eggs from nursery
-                for p in release_pupae:
-                    eggs_nursery.remove(p)
+                for ep in release_pupae:
+                    eggs_nursery.remove(ep)
                 eggs_hatched = True
 
         if ((len(report_times) == 0 and not round(total_time, 2) % 1) or
             round(total_time, 2) in report_times):
             print_status(total_time, population, larvae + pupae,
                          restocking,
-                         latest_eggs, repetition)
+                         latest_eggs, repetition, p)
