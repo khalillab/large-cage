@@ -17,7 +17,7 @@ MATING_MOD = {
      'DWWW': 0.45,
      'RWAW': 1.03,
      'WWAW': 1.03,
-     'DWAA': 0.82,
+     'DWAA': 0.82,},
 'm': {
      'DDAW': 1.06,
      'DDWW': 0.86,
