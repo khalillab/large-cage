@@ -165,7 +165,8 @@ class Individual():
         self.deposing_eggs = self.deposes_eggs(self.get_deposition_mod())
 
         # egg production
-        if self.sex == 'f' and ''.join(sorted(self.genotype1)) not in self.p['NON_FUNCTIONAL']:
+        if self.sex == 'f' and ''.join(sorted(self.genotype1)) not in [set(x)
+                                                                       for x in self.p['NON_FUNCTIONAL']]:
             if self.p['DRIVE'] not in self.genotype1:
                 self.eggs = int(get_rvs('norm', (self.p['EGGS_WT']['loc'],
                                                  self.p['EGGS_WT']['scale'])))
@@ -326,7 +327,8 @@ class Individual():
         '''
         if self.intersex:
             return False
-        if self.sex == 'f' and self.genotype1 in self.p['NON_FUNCTIONAL']:
+        if self.sex == 'f' and self.genotype1 in [set(x) for x in
+                                                  self.p['NON_FUNCTIONAL']]:
             return False
         else:
             prob = self._mating_probability()
