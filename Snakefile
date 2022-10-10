@@ -1,10 +1,7 @@
 import numpy as np
 
-#scenarios = ['base', 'alt', 'lowfitness']
-#sizes = ['large', 'bugdorm']
-#cages = ['antidote', 'baseline', 'wt']
-scenarios = ['base']
-sizes = ['large']
+scenarios = ['base', 'alt', 'lowfitness']
+sizes = ['large', 'bugdorm']
 cages = ['antidote', 'baseline', 'wt']
 
 rule all:
