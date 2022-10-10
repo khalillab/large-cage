@@ -1,0 +1,226 @@
+---
+# parameters
+#
+# can be overridden by calling scipts
+#
+# release size
+# (i.e. how many pupae)
+RELEASE: 150
+# how many simulations to run
+REPETITIONS: 50
+# introduce homozygous antidote individuals
+HOM_ANTIDOTE: True
+# fitness effect of the antidrive (on number of eggs)
+HOM_ANTIDRIVE_EFFECT: 1
+HET_ANTIDRIVE_EFFECT: 1
+# females mating probability
+MATING_PROBABILITY: 0.2
+# males mating probability
+MATING_PROBABILITY_MALE: 1
+# genotype modifiers for mating probability
+MATING_MOD: {
+'f': {
+     'DWAW': 0.82,
+     'DWWW': 0.45,
+     'RWAW': 1.03,
+     'WWAW': 1.03,
+     'DWAA': 0.82,},
+'m': {
+     'DDAW': 1.06,
+     'DDWW': 0.86,
+     'DRAW': 1.06,
+     'DRWW': 0.86,
+     'DWAW': 1.37,
+     'DWWW': 1.28,
+     'RRAW': 0.94,
+     'RWAW': 0.94,
+     'WWAW': 0.81,
+     'DDAA': 0.1,
+     'DRAA': 0.1,
+     'DWAA': 0.1,
+     'RRAA': 0.1,
+     'RWAA': 0.1,
+     'WWAA': 0.1,}
+}
+# can females/males mate multiple times?
+MULTIPLE_MATING_FEMALE: false
+MULTIPLE_MATING_MALE: true
+# females eggs deposition probability
+EGG_DEPOSITION_PROBABILITY: 0.238575
+# genotype modifiers for deposition probability
+DEPOSITION_MOD: {
+'f': {'DWAA': 0.58,
+     'DWAW': 0.58,
+     'DWWW': 0.69,
+     'RWAA': 0.58,
+     'RWAW': 0.58,
+     'RWWW': 0.5,
+     'WWAA': 0.9,
+     'WWWW': 0.95},
+'m': {'DDAA': 0.79,
+     'DDAW': 0.89,
+     'DDWW': 0.94,
+     'DRAA': 0.79,
+     'DRAW': 0.89,
+     'DRWW': 0.94,
+     'DWAA': 0.79,
+     'DWAW': 0.89,
+     'DWWW': 0.94,
+     'RRAA': 0.79,
+     'RRAW': 0.89,
+     'RRWW': 0.94,
+     'RWAA': 0.79,
+     'RWAW': 0.89,
+     'RWWW': 0.94,
+     'WWAA': 0.79,
+     'WWAW': 0.97,
+     'WWWW': 0.95}
+}
+# lifespan for adults (weibull)
+# a random variable is derived from this distribution
+SURVIVAL: {'c': 4.238761472584551,
+           'scale': 27.901772767965426,
+           'loc': -5.4644363721937825}
+SURVIVAL_MALE: {'c': 1.709696e+00,
+                'scale': 1.142531e+01,
+                'loc': 1.833875e+00}
+SURVIVAL_FEMALE: {'c': 8.215818e+00,
+                  'scale': 4.835784e+01,
+                  'loc': -2.551209e+01}
+# times from egg to full adult
+# time 0 is egg deposition
+# timer is reset once adult stage is reached
+# times are extracted from a uniform distribution
+# between the two extremes
+TIME_TO_HATCH: [1.8, 2.2]
+TIME_TO_PUPA: [9, 10]
+TIME_TO_MATURATION: [10, 12]
+# frequency of update of the simulation
+# best not to change this in order to avoid missing
+# introductions and other unforeseen bugs
+TIME_STEP: 0.1
+# final day
+END_TIME: 500
+# days of the week for releases
+# use integers here: 0 is Monday, six is Sunday
+RELEASE_DAYS: [0, ]
+# release adults in the normal cycle?
+USE_ADULTS: True
+# initial releases
+RELEASE_WT: [400, 0, 0, 0, 0, 0]
+RELEASE_ANTI: [0, 0, 0, 0, 0, 0]
+RELEASE_DRIVE: [0, 0, 0, 111, 111, 111]
+# subsequent time releases
+# -1 = do them until run ends
+# otherwise do this many
+# if none are intended indicate "null"
+LATE_RELEASES: null
+LATE_RELEASES_START: null
+LATE_RELEASES_ANTI: null
+# alleles (at two loci)
+WILD_TYPE: 'W'  # both loci
+DRIVE: 'D'  # locus 1
+ANTI_DRIVE: 'A'  # locus 2
+RESISTANCE: 'R'  # locus 1
+# which genotypes are sterile (locus 1)
+NON_FUNCTIONAL: [
+'DD',  # homozygous
+'DR',  # heterozygous
+'RR']  # homozygous
+# phenotype of different genotypes
+# for each parameter we define the normal distribution
+# from which to extract the random variable
+#
+# NUCL_FROM_* indicates from which parent the nuclease
+# has been inherited
+#
+# homing efficiency (normal distribution)
+DRIVE_EFFICIENCY_FEMALE: {'loc': 0.9867,
+                          'scale': 0.0163}
+DRIVE_EFFICIENCY_MALE: {'loc': 0.9667,
+                        'scale': 0.0408}
+# antidote efficiency
+DRIVE_EFFICIENCY_MOD: {
+'f': {'DRAA': 0.5,
+      'DRAW': 0.5,
+      'DRWW': 0.5,
+      'DWAA': 0.55,
+      'DWAW': 0.55},
+'m': {'DRAA': 0.5,
+      'DRAW': 0.5,
+      'DRWW': 0.5,
+      'DWAA': 0.52,
+      'DWAW': 0.52}
+}
+# antidote inheritance
+ANTIDOTE_INHERITANCE: {
+'f': {'DDAW': 0.52,
+      'DRAW': 0.52,
+      'DWAW': 0.52,
+      'RRAW': 0.52,
+      'RWAW': 0.52,
+      'WWAW': 0.52},
+'m': {'DDAW': 0.48,
+      'DRAW': 0.48,
+      'DWAW': 0.51,
+      'RRAW': 0.48,
+      'RWAW': 0.48,
+      'WWAW': 0.48}
+}
+# emergence of resistant allele (if drive fails)
+RESISTANCE_EFFICIENCY: {'f': 0.4685,
+                        'm': 0.4685}
+# number of eggs (normal distribution)
+EGGS_WT: {'loc': 137.4,
+          'scale': 34.5}
+EGGS_NUCL_FROM_MOTHER: {'loc': 137.4,
+                        'scale': 34.5}
+EGGS_NUCL_FROM_FATHER: {'loc': 137.4,
+                        'scale': 34.5}
+EGGS_NUCL_FROM_BOTH: {'loc': 137.4,
+                      'scale': 34.5}
+# genotype modifiers for number of eggs
+EGGS_MOD: {
+'f': {'DWAA': 0.96,
+     'DWAW': 0.96,
+     'DWWW': 0.65,},
+'m': {}
+}
+# eggs hatching probability (normal distribution)
+HATCHING_WT: {'loc': 0.8667, 'scale': 0.0046}
+HATCHING_NUCL_FROM_MOTHER: {'loc': 0.8667, 'scale': 0.0046}
+HATCHING_NUCL_FROM_FATHER: {'loc': 0.8667, 'scale': 0.0046}
+HATCHING_NUCL_FROM_BOTH: {'loc': 0.8667, 'scale': 0.0046}
+# genotype modifiers for hatching rate
+HATCHING_MOD: {
+'f': {'DWAA': 0.81,
+     'DWAW': 0.81,
+     'DWWW': 0.62,},
+'m': {}
+}
+# larval mortality (normal distribution)
+LARVAL_WT: {'loc': 0.0825, 'scale': 0.0214}
+LARVAL_NUCL_FROM_MOTHER: {'loc': 0.0825, 'scale': 0.0214}
+LARVAL_NUCL_FROM_FATHER: {'loc': 0.0825, 'scale': 0.0214}
+LARVAL_NUCL_FROM_BOTH: {'loc': 0.0825, 'scale': 0.0214}
+# pupal mortality (males) (normal distribution)
+PUPAL_M_WT: {'loc': 0.0918, 'scale': 0.0161}
+PUPAL_M_NUCL_FROM_MOTHER: {'loc': 0.0918, 'scale': 0.0161}
+PUPAL_M_NUCL_FROM_FATHER: {'loc': 0.0918, 'scale': 0.0161}
+PUPAL_M_NUCL_FROM_BOTH: {'loc': 0.0918, 'scale': 0.0161}
+# pupal mortality (females) (normal distribution)
+PUPAL_F_WT: {'loc': 0.0918, 'scale': 0.0161}
+PUPAL_F_NUCL_FROM_MOTHER: {'loc': 0.0918, 'scale': 0.0161}
+PUPAL_F_NUCL_FROM_FATHER: {'loc': 0.0918, 'scale': 0.0161}
+# is this individual intersex?
+# (means that it does not mate)
+# requires presence of the drive in locus 1
+# (normal distributions)
+INTERSEX_NUCL_FROM_FATHER: {'loc': 0.0353,
+                            'scale': 0.0124}
+INTERSEX_NUCL_FROM_MOTHER: {'loc': 0.0096,
+                            'scale': 0.0066}
+# eggs filter
+# (to simulate any problems with eggs production)
+EGGS_FILTER_MEAN: 1750
+EGGS_FILTER_STD: 150
