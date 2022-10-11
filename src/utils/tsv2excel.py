@@ -23,7 +23,7 @@ if __name__ == "__main__":
     m = pd.read_csv(options.input, sep='\t')
     ex = pd.ExcelWriter(options.output)
 
-    cols = ['round', 'time', 'pop', 'fpop', 'eggs', 'feggs', 'output',
+    cols = ['round', 'time', 'fitness', 'pop', 'fpop', 'eggs', 'feggs', 'output',
             'WT.output', 'transgenes.output', 'drives.output',
             'anti.output', 'resistance.output']
 
