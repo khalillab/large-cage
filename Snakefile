@@ -1,13 +1,34 @@
 import numpy as np
 
-scenarios = ['base', 'alt', 'lowfitness']
+# specific scenarios
+lowfitness = ['lowfitness'] + ['lowfitness_%.2f' % p
+                               for p in [0.01, 0.05, 0.2, 0.3, 0.5,
+                                         0.7, 0.9, 1]]
+releases = [600, 1200, 2400]
+times = [[1, 4], [1, 4, 7],
+         [0, 1, 2, 3, 4, 5, 6]]
+rd = []
+for r in releases:
+    for t in times:
+        if r == 600 and len(t) == 2:
+            continue
+        rd.append(f'release_{r}_{len(t)}')
+
+# all other scenarios
 sizes = ['large', 'bugdorm']
-cages = ['antidote', 'baseline', 'wt']
+transgenes = ['antidote', 'baseline']
+cages = transgenes + ['wt']
 
 rule all:
   input:
-    expand('out/{size}/{scenario}/{cage}.tsv',
-           scenario=scenarios, cage=cages, size=sizes)
+    expand('out/{size}/base/{cage}.tsv',
+           cage=cages, size=sizes),
+    expand('out/{size}/alt/{cage}.tsv',
+           cage=transgenes, size=sizes),
+    expand('out/{size}/{scenario}/antidote.tsv',
+           scenario=lowfitness, size=sizes),
+    expand('out/large/{scenario}/{cage}.tsv',
+           scenario=rd, cage=cages)
 
 rule simulate:
   input:

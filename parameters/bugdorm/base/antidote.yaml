@@ -44,7 +44,7 @@ MATING_MOD: {
 MULTIPLE_MATING_FEMALE: false
 MULTIPLE_MATING_MALE: true
 # females eggs deposition probability
-EGG_DEPOSITION_PROBABILITY: 0.238575
+EGG_DEPOSITION_PROBABILITY: 1
 # genotype modifiers for deposition probability
 DEPOSITION_MOD: {
 'f': {'DWAA': 0.58,
