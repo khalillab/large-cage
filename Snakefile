@@ -21,13 +21,13 @@ cages = transgenes + ['wt']
 
 rule all:
   input:
-    expand('out/{size}/base/{cage}.tsv',
+    expand('out/{size}/base/{cage}.xlsx',
            cage=cages, size=sizes),
-    expand('out/{size}/alt/{cage}.tsv',
+    expand('out/{size}/alt/{cage}.xlsx',
            cage=transgenes, size=sizes),
-    expand('out/{size}/{scenario}/antidote.tsv',
+    expand('out/{size}/{scenario}/antidote.xlsx',
            scenario=lowfitness, size=sizes),
-    expand('out/large/{scenario}/{cage}.tsv',
+    expand('out/large/{scenario}/{cage}.xlsx',
            scenario=rd, cage=cages)
 
 rule simulate:
@@ -41,3 +41,11 @@ rule simulate:
           --parameters {input} \
           > {output}
       '''
+
+rule convert:
+  input:
+      'out/{size}/{scenario}/{cage}.tsv'
+  output:
+      'out/{size}/{scenario}/{cage}.xlsx'
+  shell:
+      'python3 src/utils/tsv2excel.py {input} {output}'
