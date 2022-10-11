@@ -14,9 +14,9 @@ HOM_ANTIDOTE: True
 HOM_ANTIDRIVE_EFFECT: 1
 HET_ANTIDRIVE_EFFECT: 1
 # females mating probability
-MATING_PROBABILITY: 0.2
+MATING_PROBABILITY: 0.66
 # males mating probability
-MATING_PROBABILITY_MALE: 1
+MATING_PROBABILITY_MALE: 0.66
 # genotype modifiers for mating probability
 MATING_MOD: {
 'f': {'DWAA': 0.82,
