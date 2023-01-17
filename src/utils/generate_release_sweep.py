@@ -4,6 +4,7 @@
 import os
 import yaml
 import argparse
+import numpy as np
 
 
 def get_options():
@@ -22,28 +23,21 @@ def get_options():
 if __name__ == "__main__":
     options = get_options()
 
-    y = yaml.load(open(options.parameters),
-                  Loader=yaml.SafeLoader)
+    for p in range(500, 5100, 500):
+        antidote = p * 0.23
+        for d in np.linspace(0.1, 0.8, 15):
+            y = yaml.load(open(options.parameters),
+                      Loader=yaml.SafeLoader)
 
-    releases = [600, 1200, 2400]
-    times = [[1, 4], [1, 4, 7],
-             [0, 1, 2, 3, 4, 5, 6]]
-
-    for r in releases:
-        for t in times:
-            # this is the default scenario
-            if r == 600 and len(t) == 2:
-                continue
-            y['RELEASE'] = r
-            y['RELEASE_DAYS'] = t
-
+            y['RELEASE'] = p
+            y['LATE_RELEASES_DRIVE_FREQUENCY'] = d
             fname = '.'.join(os.path.split(options.parameters)[-1].split('.')[:-1])
             try:
                 os.mkdir(options.out)
             except: pass
             try:
-                os.mkdir(os.path.join(options.out, 'release_%d_%d' % (r, len(t))))
+                os.mkdir(os.path.join(options.out, 'release_%d_%.2f' % (p, d)))
             except: pass
-            out = os.path.join(options.out, 'release_%d_%d' % (r, len(t)), '%s.yaml' % fname)
-            print(r, t, out)
+            out = os.path.join(options.out, 'release_%d_%.2f' % (p, d), '%s.yaml' % fname)
+            print(p, out)
             yaml.dump(y, open(out, 'w'))

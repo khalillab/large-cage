@@ -707,6 +707,32 @@ def print_header(p=None):
                     ))
 
 
+def get_drive_frequency(population, p=None):
+    '''Get frequency of drive individuals in the population
+
+    Args:
+        population (iterable)
+            All individuals in the population
+        p (dict)
+            Parameters
+
+    Returns:
+        proportion (float)
+            The proportion of individuals that carry a drive allele
+    '''
+    if p is None:
+        p = params
+
+    pop = len(population)
+    if pop != 0:
+        prop = len([x for x in population
+                    if p['DRIVE'] in x.genotype1]) / pop
+    else:
+        prop = np.nan
+
+    return prop
+
+
 def print_status(time, population, output,
                  initial_population,
                  eggs, repetition, p=None):
@@ -835,7 +861,9 @@ def run_simulation(start_populations,
             Additional releases; first element is an iterable of adults,
             the second element is the timepoint at which to start the
             release(s), the third one is the number of releases,
-            -1 indicates indefinite releases
+            -1 indicates indefinite releases. The fourth is the frequency
+            of drive individuals at which to start the releases, which
+            overrides the second argument if not None
         eggs_filter (tuple)
             Trim the eggs output, according to a desired normal distribution
             First element is the loc parameter, second is the scale.
@@ -879,6 +907,11 @@ def run_simulation(start_populations,
 
     # counter for additional releases
     additional_releases_counter = 0
+
+    # keep track of drive frequencies
+    drive_frequencies = []
+    drive_ever_released = False
+    drive_threshold_passed = False
 
     while len(population) > 0 and total_time < end_time:
         restocking = False
@@ -943,11 +976,12 @@ def run_simulation(start_populations,
                     population.add(indv)
 
             # additional releases (to be done before mating)
-            if additional_releases is not None and total_time >= additional_releases[1]:
-                additional_releases_counter += 1
-                if additional_releases[2] == -1 or additional_releases_counter <= additional_releases[2]:
-                    for adult in additional_releases[0]:
-                        population.add(deepcopy(adult))
+            if additional_releases is not None:
+                if (additional_releases[3] is None and total_time >= additional_releases[1]) or (additional_releases[3] is not None and drive_threshold_passed):
+                    additional_releases_counter += 1
+                    if additional_releases[2] == -1 or additional_releases_counter <= additional_releases[2]:
+                        for adult in additional_releases[0]:
+                            population.add(deepcopy(adult))
 
             # mate adults (we are after feeding)
             eggs = mate_all(population, p=p)
@@ -982,6 +1016,21 @@ def run_simulation(start_populations,
 
         if ((len(report_times) == 0 and not round(total_time, 2) % 1) or
             round(total_time, 2) in report_times):
+            if not drive_threshold_passed:
+                # keep track of drive frequencies
+                drive_freq = get_drive_frequency(population, p)
+                if not drive_ever_released and drive_freq > 0:
+                    drive_ever_released = True
+                    sys.stderr.write(f'{total_time} drive observed\n')
+                drive_frequencies.append(drive_freq)
+                drive_frequencies = drive_frequencies[-7:]
+                # if set, check if drive frequency threshold has been passed
+                if additional_releases[3] is not None and drive_ever_released:
+                    if len([x for x in drive_frequencies
+                            if x > additional_releases[3]]) == len(drive_frequencies):
+                                drive_threshold_passed = True
+                                sys.stderr.write(f'{total_time} will start antidote releases\n')
+
             print_status(total_time, population, larvae + pupae,
                          restocking,
                          latest_eggs, repetition, p)

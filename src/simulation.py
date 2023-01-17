@@ -98,6 +98,12 @@ if __name__ == "__main__":
         if p['LATE_RELEASES'] is not None:
             late_releases_start = p['LATE_RELEASES_START']
             late_releases_counter = p['LATE_RELEASES']
+            late_releases_drive_frequency = p.get('LATE_RELEASES_DRIVE_FREQUENCY', None)
+            if late_releases_drive_frequency is not None:
+                if late_releases_start is not None:
+                    sys.stderr.write('Using antidote release timing based on '
+                                     'drive frequency, ignoring start time\n')
+                    late_releases_start = None
             late = set()
             if p['LATE_RELEASES_ANTI'] is not None:
                 for i in range(int(p['LATE_RELEASES_ANTI'])):
@@ -111,7 +117,9 @@ if __name__ == "__main__":
                                        parameters=p)
                     x.stage = 'adult'
                     late.add(x)
-            late_releases = (late, late_releases_start, late_releases_counter)
+            late_releases = (late, late_releases_start,
+                             late_releases_counter,
+                             late_releases_drive_frequency)
 
         run_simulation(start_populations,
                        end_time=p['END_TIME'],

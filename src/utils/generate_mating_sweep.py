@@ -56,11 +56,11 @@ if __name__ == "__main__":
                 if 'D' in x[:2]
                 and 'A' in x[2:]}
 
-    y = yaml.load(open(options.parameters),
-                  Loader=yaml.SafeLoader)
-
     for p in [0.01, 0.05, 0.2, 0.3, 0.5,
               0.7, 0.9, 1]:
+        y = yaml.load(open(options.parameters),
+                      Loader=yaml.SafeLoader)
+
         if options.het_model == 'same':
             het_value = p
         elif options.het_model == 'additive':
