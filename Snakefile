@@ -1,22 +1,23 @@
 import numpy as np
 
 # specific scenarios
-lowfitness = ['lowfitness'] + ['lowfitness_%.2f' % p
-                               for p in [0.01, 0.05, 0.2, 0.3, 0.5,
-                                         0.7, 0.9, 1]]
-releases = [600, 1200, 2400]
-times = [[1, 4], [1, 4, 7],
-         [0, 1, 2, 3, 4, 5, 6]]
-rd = []
+lowfitness = ['lowfitness_%.2f' % p
+              for p in [0.01, 0.05, 0.2, 0.3, 0.5,
+                        0.7, 0.9, 1]]
+releases = range(500, 5100, 500) 
+drive_thresholds = np.linspace(0.1, 0.8, 15)
+drive = []
+anti = []
 for r in releases:
-    for t in times:
-        if r == 600 and len(t) == 2:
-            continue
-        rd.append(f'release_{r}_{len(t)}')
+    drive.append(f'release_{r}')
+    for t in drive_thresholds:
+        anti.append('release_%d_%.2f' % (r, t))
 
 # all other scenarios
 sizes = ['large', 'bugdorm']
-transgenes = ['antidote', 'baseline']
+antidote = ['antidote']
+baseline = ['baseline']
+transgenes = antidote + baseline 
 cages = transgenes + ['wt']
 
 rule all:
@@ -27,8 +28,10 @@ rule all:
            cage=transgenes, size=sizes),
     expand('out/{size}/{scenario}/antidote.xlsx',
            scenario=lowfitness, size=sizes),
-    expand('out/large/{scenario}/{cage}.xlsx',
-           scenario=rd, cage=cages)
+    expand('out/{size}/{scenario}/baseline.xlsx',
+           scenario=drive, size=sizes),
+    expand('out/{size}/{scenario}/antidote.xlsx',
+           scenario=anti, size=sizes)
 
 rule simulate:
   input:
