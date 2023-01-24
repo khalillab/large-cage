@@ -93,7 +93,7 @@ TIME_TO_MATURATION: [10, 12]
 # introductions and other unforeseen bugs
 TIME_STEP: 0.1
 # final day
-END_TIME: 500
+END_TIME: 1500
 # days of the week for releases
 # use integers here: 0 is Monday, six is Sunday
 RELEASE_DAYS: [0, ]
