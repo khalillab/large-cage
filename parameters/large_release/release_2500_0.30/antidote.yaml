@@ -1,0 +1,372 @@
+ANTIDOTE_INHERITANCE:
+  f:
+    DDAW: 0.52
+    DRAW: 0.52
+    DWAW: 0.52
+    RRAW: 0.52
+    RWAW: 0.52
+    WWAW: 0.52
+  m:
+    DDAW: 0.48
+    DRAW: 0.48
+    DWAW: 0.51
+    RRAW: 0.48
+    RWAW: 0.48
+    WWAW: 0.48
+ANTI_DRIVE: A
+DEPOSITION_MOD:
+  f: {}
+  m: {}
+DRIVE: D
+DRIVE_EFFICIENCY_FEMALE:
+  loc: 0.9867
+  scale: 0.0163
+DRIVE_EFFICIENCY_MALE:
+  loc: 0.9667
+  scale: 0.0408
+DRIVE_EFFICIENCY_MOD:
+  f:
+    DRAA: 0.5
+    DRAW: 0.5
+    DRWW: 0.5
+    DWAA: 0.55
+    DWAW: 0.55
+  m:
+    DRAA: 0.5
+    DRAW: 0.5
+    DRWW: 0.5
+    DWAA: 0.52
+    DWAW: 0.52
+EGGS_FILTER_MEAN: 1750
+EGGS_FILTER_STD: 150
+EGGS_MOD:
+  f:
+    DWAA: 0.96
+    DWAW: 0.96
+    DWWW: 0.65
+    RWAA: 1.08
+    RWAW: 1.15
+    WWAA: 1.08
+    WWAW: 1.15
+  m:
+    DDAA: 1.07
+    DDAW: 1.07
+    DDWW: 1.1
+    DRAA: 1.07
+    DRAW: 1.07
+    DRWW: 1.1
+    DWAA: 1.07
+    DWAW: 1.07
+    DWWW: 1.1
+    RRAA: 1.25
+    RRAW: 1.35
+    RWAA: 1.25
+    RWAW: 1.35
+    WWAA: 1.25
+    WWAW: 1.35
+EGGS_NUCL_FROM_BOTH:
+  loc: 137.4
+  scale: 34.5
+EGGS_NUCL_FROM_FATHER:
+  loc: 137.4
+  scale: 34.5
+EGGS_NUCL_FROM_MOTHER:
+  loc: 137.4
+  scale: 34.5
+EGGS_WT:
+  loc: 137.4
+  scale: 34.5
+EGG_DEPOSITION_PROBABILITY: 0.238575
+END_TIME: 500
+HATCHING_MOD:
+  f:
+    DWAA: 0.81
+    DWAW: 0.81
+    DWWW: 0.62
+    RWAA: 1.15
+    RWAW: 1.05
+    WWAA: 1.15
+    WWAW: 1.05
+  m:
+    DDAA: 1.1
+    DDAW: 1.1
+    DDWW: 1.06
+    DRAA: 1.1
+    DRAW: 1.1
+    DRWW: 1.06
+    DWAA: 1.1
+    DWAW: 1.1
+    DWWW: 1.06
+    RRAA: 1.05
+    RRAW: 1.1
+    RWAA: 1.05
+    RWAW: 1.1
+    WWAA: 1.05
+    WWAW: 1.1
+HATCHING_NUCL_FROM_BOTH:
+  loc: 0.8667
+  scale: 0.0046
+HATCHING_NUCL_FROM_FATHER:
+  loc: 0.8667
+  scale: 0.0046
+HATCHING_NUCL_FROM_MOTHER:
+  loc: 0.8667
+  scale: 0.0046
+HATCHING_WT:
+  loc: 0.8667
+  scale: 0.0046
+HET_ANTIDRIVE_EFFECT: 1
+HOM_ANTIDOTE: true
+HOM_ANTIDRIVE_EFFECT: 1
+INTERSEX_NUCL_FROM_FATHER:
+  loc: 0.0353
+  scale: 0.0124
+INTERSEX_NUCL_FROM_MOTHER:
+  loc: 0.0096
+  scale: 0.0066
+LARVAL_NUCL_FROM_BOTH:
+  loc: 0.0825
+  scale: 0.0214
+LARVAL_NUCL_FROM_FATHER:
+  loc: 0.0825
+  scale: 0.0214
+LARVAL_NUCL_FROM_MOTHER:
+  loc: 0.0825
+  scale: 0.0214
+LARVAL_WT:
+  loc: 0.0825
+  scale: 0.0214
+LATE_RELEASES: -1
+LATE_RELEASES_ANTI: 137
+LATE_RELEASES_DRIVE_FREQUENCY: !!python/object/apply:numpy.core.multiarray.scalar
+- !!python/object/apply:numpy.dtype
+  args:
+  - f8
+  - false
+  - true
+  state: !!python/tuple
+  - 3
+  - <
+  - null
+  - null
+  - null
+  - -1
+  - -1
+  - 0
+- !!binary |
+  NDMzMzMz0z8=
+LATE_RELEASES_START: 147
+MATING_MOD:
+  f:
+    DWAA: 0.82
+    DWAW: 0.82
+    DWWW: 0.45
+    RWAW: 1.03
+    WWAW: 1.03
+  m:
+    DDAA: 0.2
+    DDAW: 1.06
+    DDWW: 0.86
+    DRAA: 0.2
+    DRAW: 1.06
+    DRWW: 0.86
+    DWAA: 0.2
+    DWAW: 1.37
+    DWWW: 1.28
+    RRAA: 0.2
+    RRAW: 0.94
+    RWAA: 0.2
+    RWAW: 0.94
+    WWAA: 0.2
+    WWAW: 0.81
+MATING_PROBABILITY: 0.2
+MATING_PROBABILITY_MALE: 1
+MULTIPLE_MATING_FEMALE: false
+MULTIPLE_MATING_MALE: true
+NON_FUNCTIONAL:
+- DD
+- DR
+- RR
+PUPAL_F_NUCL_FROM_FATHER:
+  loc: 0.0918
+  scale: 0.0161
+PUPAL_F_NUCL_FROM_MOTHER:
+  loc: 0.0918
+  scale: 0.0161
+PUPAL_F_WT:
+  loc: 0.0918
+  scale: 0.0161
+PUPAL_M_NUCL_FROM_BOTH:
+  loc: 0.0918
+  scale: 0.0161
+PUPAL_M_NUCL_FROM_FATHER:
+  loc: 0.0918
+  scale: 0.0161
+PUPAL_M_NUCL_FROM_MOTHER:
+  loc: 0.0918
+  scale: 0.0161
+PUPAL_M_WT:
+  loc: 0.0918
+  scale: 0.0161
+RELEASE: 2500
+RELEASE_ANTI:
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+RELEASE_DAYS:
+- 1
+- 4
+RELEASE_DRIVE:
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 228
+- 228
+- 228
+- 228
+- 228
+- 228
+RELEASE_WT:
+- 600
+- 600
+- 600
+- 600
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+REPETITIONS: 1
+RESISTANCE: R
+RESISTANCE_EFFICIENCY:
+  f: 0.4685
+  m: 0.4685
+SURVIVAL:
+  c: 2.2472084592310644
+  loc: 0.7275226197070571
+  scale: 6.213064151445494
+SURVIVAL_FEMALE:
+  c: 2.2472084592310644
+  loc: 0.7275226197070571
+  scale: 6.213064151445494
+SURVIVAL_MALE:
+  c: 2.2472084592310644
+  loc: 0.7275226197070571
+  scale: 6.213064151445494
+TIME_STEP: 0.1
+TIME_TO_HATCH:
+- 1.8
+- 2.2
+TIME_TO_MATURATION:
+- 10
+- 12
+TIME_TO_PUPA:
+- 9
+- 10
+USE_ADULTS: false
+WILD_TYPE: W

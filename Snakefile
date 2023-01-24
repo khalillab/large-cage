@@ -4,7 +4,7 @@ import numpy as np
 lowfitness = ['lowfitness_%.2f' % p
               for p in [0.01, 0.05, 0.2, 0.3, 0.5,
                         0.7, 0.9, 1]]
-releases = range(500, 5100, 500) 
+releases = range(500, 5100, 500)
 drive_thresholds = np.linspace(0.1, 0.8, 15)
 drive = []
 anti = []
@@ -17,8 +17,11 @@ for r in releases:
 sizes = ['large', 'bugdorm']
 antidote = ['antidote']
 baseline = ['baseline']
-transgenes = antidote + baseline 
+transgenes = antidote + baseline
 cages = transgenes + ['wt']
+
+# runs
+repeats = 50
 
 rule all:
   input:
@@ -33,17 +36,52 @@ rule all:
     expand('out/{size}/{scenario}/antidote.xlsx',
            scenario=anti, size=sizes)
 
+rule collated:
+  input:
+    expand('out/{size}/base/{cage}.tsv',
+           cage=cages, size=sizes),
+    expand('out/{size}/alt/{cage}.tsv',
+           cage=transgenes, size=sizes),
+    expand('out/{size}/{scenario}/antidote.tsv',
+           scenario=lowfitness, size=sizes),
+    expand('out/{size}/{scenario}/baseline.tsv',
+           scenario=drive, size=sizes),
+    expand('out/{size}/{scenario}/antidote.tsv',
+           scenario=anti, size=sizes)
+
+rule raw:
+  input:
+    expand('raw/{size}/base/{cage}_{repeat}.tsv',
+           cage=cages, size=sizes, repeat=range(repeats)),
+    expand('raw/{size}/alt/{cage}_{repeat}.tsv',
+           cage=transgenes, size=sizes, repeat=range(repeats)),
+    expand('raw/{size}/{scenario}/antidote_{repeat}.tsv',
+           scenario=lowfitness, size=sizes, repeat=range(repeats)),
+    expand('raw/{size}/{scenario}/baseline_{repeat}.tsv',
+           scenario=drive, size=sizes, repeat=range(repeats)),
+    expand('raw/{size}/{scenario}/antidote_{repeat}.xlsx',
+           scenario=anti, size=sizes, repeat=range(repeats))
+
 rule simulate:
   input:
       'parameters/{size}/{scenario}/{cage}.yaml'
   output:
-      'out/{size}/{scenario}/{cage}.tsv'
+      'out/{size}/{scenario}/{cage}_{repeat}.tsv'
   shell:
       '''
       python3 src/simulation.py \
           --parameters {input} \
           > {output}
       '''
+
+rule collate:
+  input:
+      expand('out/{{size}}/{{scenario}}/{{cage}}_{repeat}.tsv',
+             repeat=range(repeats))
+  output:
+      'out/{size}/{scenario}/{cage}.tsv'
+  shell:
+      'python3 src/utils/combine_runs.py {input} {output}'
 
 rule convert:
   input:

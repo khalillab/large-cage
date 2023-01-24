@@ -7,7 +7,7 @@
 # (i.e. how many pupae)
 RELEASE: 150
 # how many simulations to run
-REPETITIONS: 50
+REPETITIONS: 1
 # introduce homozygous antidote individuals
 HOM_ANTIDOTE: True
 # fitness effect of the antidrive (on number of eggs)
