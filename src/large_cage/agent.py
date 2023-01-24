@@ -758,69 +758,69 @@ def print_status(time, population, output,
         p = params
     fpop = [x for x in population if x.sex == 'f']
     pop = len(population)
-    results = [repetition, time, initial_population,
-               len(population), len(fpop),
-               len(eggs), len([x for x in eggs if x.sex == 'f']),
-               len(output), len([x for x in output if x.sex == 'f'])]
+    results = [str(repetition), str(time), str(initial_population),
+               str(len(population)), str(len(fpop)),
+               str(len(eggs)), str(len([x for x in eggs if x.sex == 'f'])),
+               str(len(output)), str(len([x for x in output if x.sex == 'f']))]
     if pop != 0:
         if len(fpop) == 0:
-            results.append(0.)
+            results.append('%.5f' % 0.)
         else:
-            results.append(len([x for x in fpop
-                                if x.mating and x.deposing_eggs]) / len(fpop))
-        results.append(len([x for x in population
+            results.append('%.5f' % (len([x for x in fpop
+                                if x.mating and x.deposing_eggs]) / len(fpop)))
+        results.append('%.5f' % (len([x for x in population
                             if x.genotype1 == {p['WILD_TYPE'], }
-                            and x.genotype2 == {p['WILD_TYPE'], }]) / pop)
-        results.append(len([x for x in population
+                            and x.genotype2 == {p['WILD_TYPE'], }]) / pop))
+        results.append('%.5f' % (len([x for x in population
                             if x.genotype1.difference({p['WILD_TYPE'], }) != set()
-                            or x.genotype2.difference({p['WILD_TYPE'], }) != set()]) / pop)
-        results.append(len([x for x in population
-                            if p['DRIVE'] in x.genotype1]) / pop)
-        results.append(len([x for x in population
-                            if p['ANTI_DRIVE'] in x.genotype2]) / pop)
-        results.append(len([x for x in population
-                            if p['RESISTANCE'] in x.genotype1]) / pop)
+                            or x.genotype2.difference({p['WILD_TYPE'], }) != set()]) / pop))
+        results.append('%.5f' % (len([x for x in population
+                            if p['DRIVE'] in x.genotype1]) / pop))
+        results.append('%.5f' % (len([x for x in population
+                            if p['ANTI_DRIVE'] in x.genotype2]) / pop))
+        results.append('%.5f' % (len([x for x in population
+                            if p['RESISTANCE'] in x.genotype1]) / pop))
         for gt in get_all_genotypes(p):
-            results.append(len([x for x in population
-                                if x.get_genotype() == gt]) / pop)
+            results.append('%.5f' % (len([x for x in population
+                                if x.get_genotype() == gt]) / pop))
     else:
         for _ in range(6):
-            results.append(np.nan)
+            results.append('')
         for gt in get_all_genotypes(p):
-            results.append(np.nan)
+            results.append('')
     if len(eggs) != 0:
         for gt in get_all_genotypes(p):
-            results.append(len([x for x in eggs
-                                if x.get_genotype() == gt]) / len(eggs))
+            results.append('%.5f' % (len([x for x in eggs
+                                if x.get_genotype() == gt]) / len(eggs)))
     else:
         for gt in get_all_genotypes(p):
-            results.append(np.nan)
+            results.append('')
     if len(output) != 0:
-        results.append(len([x for x in output
+        results.append('%.5f' % (len([x for x in output
                             if x.genotype1 == {p['WILD_TYPE'], }
-                            and x.genotype2 == {p['WILD_TYPE'], }]) / len(output))
-        results.append(len([x for x in output
+                            and x.genotype2 == {p['WILD_TYPE'], }]) / len(output)))
+        results.append('%.5f' % (len([x for x in output
                             if x.genotype1.difference({p['WILD_TYPE'], }) != set()
-                            or x.genotype2.difference({p['WILD_TYPE'], }) != set()]) / len(output))
-        results.append(len([x for x in output
-                            if p['DRIVE'] in x.genotype1]) / len(output))
-        results.append(len([x for x in output
-                            if p['ANTI_DRIVE'] in x.genotype2]) / len(output))
-        results.append(len([x for x in output
-                            if p['RESISTANCE'] in x.genotype1]) / len(output))
+                            or x.genotype2.difference({p['WILD_TYPE'], }) != set()]) / len(output)))
+        results.append('%.5f' % (len([x for x in output
+                            if p['DRIVE'] in x.genotype1]) / len(output)))
+        results.append('%.5f' % (len([x for x in output
+                            if p['ANTI_DRIVE'] in x.genotype2]) / len(output)))
+        results.append('%.5f' % (len([x for x in output
+                            if p['RESISTANCE'] in x.genotype1]) / len(output)))
         for gt in get_all_genotypes(p):
-            results.append(len([x for x in output
-                                if x.get_genotype() == gt]) / len(output))
+            results.append('%.5f' % (len([x for x in output
+                                if x.get_genotype() == gt]) / len(output)))
     else:
-        results.append(np.nan)
-        results.append(np.nan)
-        results.append(np.nan)
-        results.append(np.nan)
-        results.append(np.nan)
+        results.append('')
+        results.append('')
+        results.append('')
+        results.append('')
+        results.append('')
         for gt in get_all_genotypes(p):
-            results.append(np.nan)
+            results.append('')
 
-    print('\t'.join([str(x) for x in results]))
+    print('\t'.join(results))
 
 
 def run_simulation(start_populations,
