@@ -1025,7 +1025,7 @@ def run_simulation(start_populations,
                 drive_frequencies.append(drive_freq)
                 drive_frequencies = drive_frequencies[-7:]
                 # if set, check if drive frequency threshold has been passed
-                if additional_releases[3] is not None and drive_ever_released:
+                if additional_releases is not None and additional_releases[3] is not None and drive_ever_released:
                     if len([x for x in drive_frequencies
                             if x > additional_releases[3]]) == len(drive_frequencies):
                                 drive_threshold_passed = True
