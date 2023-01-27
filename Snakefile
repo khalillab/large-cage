@@ -36,37 +36,11 @@ rule all:
     expand('out/{size}/{scenario}/antidote.xlsx',
            scenario=anti, size=sizes)
 
-rule collated:
-  input:
-    expand('out/{size}/base/{cage}.tsv',
-           cage=cages, size=sizes),
-    expand('out/{size}/alt/{cage}.tsv',
-           cage=transgenes, size=sizes),
-    expand('out/{size}/{scenario}/antidote.tsv',
-           scenario=lowfitness, size=sizes),
-    expand('out/{size}/{scenario}/baseline.tsv',
-           scenario=drive, size=sizes),
-    expand('out/{size}/{scenario}/antidote.tsv',
-           scenario=anti, size=sizes)
-
-rule raw:
-  input:
-    expand('raw/{size}/base/{cage}_{repeat}.tsv',
-           cage=cages, size=sizes, repeat=range(repeats)),
-    expand('raw/{size}/alt/{cage}_{repeat}.tsv',
-           cage=transgenes, size=sizes, repeat=range(repeats)),
-    expand('raw/{size}/{scenario}/antidote_{repeat}.tsv',
-           scenario=lowfitness, size=sizes, repeat=range(repeats)),
-    expand('raw/{size}/{scenario}/baseline_{repeat}.tsv',
-           scenario=drive, size=sizes, repeat=range(repeats)),
-    expand('raw/{size}/{scenario}/antidote_{repeat}.xlsx',
-           scenario=anti, size=sizes, repeat=range(repeats))
-
 rule simulate:
   input:
       'parameters/{size}/{scenario}/{cage}.yaml'
   output:
-      'out/{size}/{scenario}/{cage}_{repeat}.tsv'
+      'raw/{size}/{scenario}/{cage}_{repeat}.tsv'
   shell:
       '''
       python3 src/simulation.py \
@@ -76,7 +50,7 @@ rule simulate:
 
 rule collate:
   input:
-      expand('out/{{size}}/{{scenario}}/{{cage}}_{repeat}.tsv',
+      expand('raw/{{size}}/{{scenario}}/{{cage}}_{repeat}.tsv',
              repeat=range(repeats))
   output:
       'out/{size}/{scenario}/{cage}.tsv'
