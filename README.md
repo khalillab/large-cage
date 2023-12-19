@@ -3,6 +3,8 @@ large-cage
 
 Agent-based modelling for the spread of gene drives and anti-drives in a large cage setting
 
+[![DOI](https://zenodo.org/badge/275172194.svg)](https://zenodo.org/doi/10.5281/zenodo.10404586)
+
 Prerequisites
 ----
 
